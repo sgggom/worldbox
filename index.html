@@ -1558,7 +1558,7 @@
         "  }","}","",
         "额外规则：",
         "- story_type、world_concept、world_tone、core_conflict 属于宏观主题，必须先完成；player_name、player_identity、player_trait、player_hook 属于微观主题，必须后完成。",
-        "- 任何已经出现在 completedTopics 中的主题都不允许再次提问。",
+        "- 任何已经出现在 completedTopics 或 askedTopics 中的主题都不允许再次提问。",
         "- 任何问题都不能涉及 NPC 设计、剧情节点、结局安排、隐藏真相。",
         "- 如果玩家自由输入已经回答了多个主题，你可以在隐藏的 setup_state 里一次性补全多个 answers，但可见正文下一轮仍然只能追问一个新问题。",
         "- 当 answers 足以支撑你在后台生成完整世界时，把 status 设为 ready。","",
@@ -1765,7 +1765,19 @@
       const payload = extractTagPayload(text, "setup_state");
       const parsed = safeParseJson(payload);
       if (!parsed) return false;
-      state.setupState = normalizeSetupState(parsed);
+      const prev = normalizeSetupState(state.setupState);
+      const next = normalizeSetupState(parsed);
+      /* Merge: never lose previously tracked topics */
+      const mergedCompleted = [...new Set([...prev.completedTopics, ...next.completedTopics])];
+      const mergedAsked = [...new Set([...prev.askedTopics, ...next.askedTopics,
+        ...(next.currentQuestionKey ? [next.currentQuestionKey] : [])])];
+      next.completedTopics = mergedCompleted;
+      next.askedTopics = mergedAsked;
+      /* Preserve previous answers that might be missing from new parse */
+      for (const [k, v] of Object.entries(prev.answers)) {
+        if (v && !next.answers[k]) next.answers[k] = v;
+      }
+      state.setupState = next;
       updateSummary(); return true;
     }
     function applyWorldbookDraftFromText(text) {
