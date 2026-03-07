@@ -1114,6 +1114,16 @@
     const DEFAULT_MODEL = "Qwen/Qwen2.5-7B-Instruct";
     const DEFAULT_TEXT_SPEED = 28;
     const MAX_WORLDBUILD_ROUNDS = 10;
+    const SETUP_TOPIC_LABELS = {
+      story_type: "故事类型",
+      world_concept: "世界概念",
+      world_tone: "世界基调",
+      core_conflict: "核心冲突",
+      player_name: "玩家名字",
+      player_identity: "玩家身份",
+      player_trait: "玩家性格倾向",
+      player_hook: "玩家切入点"
+    };
 
     const els = {
       body: document.body,
@@ -1161,6 +1171,7 @@
       messages: [],
       lastUserInput: "",
       currentTurnTimestamp: null,
+      setupState: null,
       worldbook: null,
       validation: {
         ok: false,
@@ -1202,12 +1213,13 @@
 
     function getSessionLabel() {
       if (!state.started || state.sessionStage === "idle") return "未开始";
-      if (state.sessionStage === "worldbuild") return "创建世界中";
+      if (state.sessionStage === "setup") return "创建世界中";
+      if (state.sessionStage === "bootstrap") return "编织世界中";
       return "进行中";
     }
 
-    function getWorldbuildRoundCount() {
-      return state.messages.filter(msg => msg.stage === "worldbuild" && msg.role === "user" && !msg.hidden).length;
+    function getSetupRoundCount() {
+      return state.messages.filter(msg => msg.stage === "setup" && msg.role === "user" && !msg.hidden).length;
     }
 
     function updateSummary() {
@@ -1215,15 +1227,18 @@
         els.storySummary.textContent = "在设置里填写 API Key 和模型，然后开始新冒险。世界、人设与主线都将在开局对话中共同创建。";
         return;
       }
-      if (state.sessionStage === "worldbuild") {
-        const title = state.worldbook?.worldTitle || "未命名世界";
-        const concept = state.worldbook?.coreConcept || "尚未确定";
-        const roundsUsed = getWorldbuildRoundCount();
+      if (state.sessionStage === "setup") {
+        const topic = SETUP_TOPIC_LABELS[state.setupState?.currentQuestionKey] || "故事类型";
+        const storyType = state.setupState?.answers?.storyType || "尚未确定";
+        const roundsUsed = getSetupRoundCount();
         const roundsLeft = Math.max(0, MAX_WORLDBUILD_ROUNDS - roundsUsed);
-        const readyText = isWorldbookReady()
-          ? "设定已就绪，系统会自动进入正式剧情。"
-          : `最多 ${MAX_WORLDBUILD_ROUNDS} 轮问答，剩余 ${roundsLeft} 轮。`;
-        els.storySummary.textContent = `正在与造世者共建世界。当前草案：${title}。核心概念：${concept}。${readyText}`;
+        els.storySummary.textContent = `正在与造世者共同搭建世界。已确认的故事类型：${storyType}。当前问题：${topic}。最多 ${MAX_WORLDBUILD_ROUNDS} 轮问答，剩余 ${roundsLeft} 轮。`;
+        return;
+      }
+      if (state.sessionStage === "bootstrap") {
+        const storyType = state.setupState?.answers?.storyType || "未命名类型";
+        const worldTitle = state.worldbook?.worldTitle || "未命名世界";
+        els.storySummary.textContent = `造世者正在根据“${storyType}”的设定编织 ${worldTitle} 的规则、角色档案与主线节点。`;
         return;
       }
       const title = state.worldbook?.worldTitle || "未命名世界";
@@ -1264,7 +1279,13 @@
         return;
       }
       if (phase === "thinking") {
-        updateGameStateChip(state.sessionStage === "worldbuild" ? "世界观生成中" : "模型思考中", true);
+        if (state.sessionStage === "setup") {
+          updateGameStateChip("世界设定问答中", true);
+        } else if (state.sessionStage === "bootstrap") {
+          updateGameStateChip("造世者编织世界中", true);
+        } else {
+          updateGameStateChip("模型思考中", true);
+        }
       } else if (phase === "streaming") {
         updateGameStateChip("剧情输出中", true);
       }
@@ -1279,15 +1300,46 @@
       };
     }
 
+    function createInitialSetupState() {
+      return {
+        status: "questioning",
+        currentQuestionKey: "story_type",
+        nextQuestionKey: "world_concept",
+        completedTopics: [],
+        askedTopics: [],
+        answers: {
+          storyType: "",
+          worldConcept: "",
+          worldTone: "",
+          coreConflict: "",
+          playerName: "",
+          playerIdentity: "",
+          playerTrait: "",
+          playerHook: ""
+        }
+      };
+    }
+
+    function normalizeSetupState(raw) {
+      const base = createInitialSetupState();
+      const next = raw && typeof raw === "object" ? raw : {};
+      const answers = next.answers && typeof next.answers === "object" ? next.answers : {};
+
+      return {
+        ...base,
+        ...next,
+        completedTopics: Array.isArray(next.completedTopics) ? next.completedTopics : base.completedTopics,
+        askedTopics: Array.isArray(next.askedTopics) ? next.askedTopics : base.askedTopics,
+        answers: {
+          ...base.answers,
+          ...answers
+        }
+      };
+    }
+
     function createInitialWorldbook(cfg) {
       return {
         status: "draft",
-        worldbuildProgress: {
-          completedTopics: [],
-          askedTopics: [],
-          currentQuestionKey: "story_type",
-          nextQuestionKey: "story_type"
-        },
         worldTitle: "",
         coreConcept: "",
         rules: [],
@@ -1335,7 +1387,6 @@
     function normalizeWorldbook(raw, cfg = getConfig()) {
       const base = createInitialWorldbook(cfg);
       const next = raw && typeof raw === "object" ? raw : {};
-      const worldbuildProgress = next.worldbuildProgress && typeof next.worldbuildProgress === "object" ? next.worldbuildProgress : {};
       const gmAgent = next.gmAgent && typeof next.gmAgent === "object" ? next.gmAgent : {};
       const mainPlot = next.mainPlot && typeof next.mainPlot === "object" ? next.mainPlot : {};
       const playerState = next.playerState && typeof next.playerState === "object" ? next.playerState : {};
@@ -1345,12 +1396,6 @@
       return {
         ...base,
         ...next,
-        worldbuildProgress: {
-          ...base.worldbuildProgress,
-          ...worldbuildProgress,
-          completedTopics: Array.isArray(worldbuildProgress.completedTopics) ? worldbuildProgress.completedTopics : base.worldbuildProgress.completedTopics,
-          askedTopics: Array.isArray(worldbuildProgress.askedTopics) ? worldbuildProgress.askedTopics : base.worldbuildProgress.askedTopics
-        },
         rules: Array.isArray(next.rules) ? next.rules : base.rules,
         gmAgent: {
           ...base.gmAgent,
@@ -1391,38 +1436,84 @@
       };
     }
 
-    function buildWorldbuilderSystemPrompt(cfg) {
-      const roundsUsed = getWorldbuildRoundCount();
+    function buildSetupSystemPrompt(cfg) {
+      const roundsUsed = getSetupRoundCount();
       const roundsLeft = Math.max(0, MAX_WORLDBUILD_ROUNDS - roundsUsed);
-      const worldbook = normalizeWorldbook(state.worldbook, cfg);
+      const setupState = normalizeSetupState(state.setupState);
       return [
-        "你是一个世界观生成 Agent，要通过对话和 3-5 个编号选项，逐步引导玩家一起完成本局游戏的世界构建。",
+        "你是造世者，现在处于世界观创建阶段。",
+        "",
+        "你的职责：",
+        "- 只和玩家共同确定两类内容：世界观，和玩家自身角色。",
+        "- 关键 NPC、剧情走向、主线节点、结局方向，全部由你在后续后台自行构建，不允许向玩家征求意见。",
+        "- 当前阶段严格遵循“先宏观，后微观”：先故事类型，再世界概念、世界基调、核心冲突，最后才是玩家名字、身份、性格倾向、进入世界的切入点。",
+        "- 第一轮必须先问“这是什么类型的故事”。",
+        "- 每一轮只能问 1 个问题，不能同时问两个独立问题。",
+        "- 非收束轮必须给出 2-3 个编号选项，同时允许玩家自由输入。",
+        `- 最多只能进行 ${MAX_WORLDBUILD_ROUNDS} 轮问答。当前已用 ${roundsUsed} 轮，剩余 ${roundsLeft} 轮。`,
+        "- 如果当前信息已经足够，或者只剩最后一轮，你必须收束设定，不再继续提问。",
+        "",
+        "你的回复要求：",
+        "- 可见正文只能使用结构化标签：<narration>...</narration> 与 <dialogue><speaker>...</speaker><content>...</content></dialogue>。",
+        "- <content> 里只能放人物真正说出口的台词，不能夹带动作、神态、心理、场景描写。",
+        "- 人物动作和神态必须单独写进相邻的 <narration>，例如：<narration>技术员皱了一下眉，随即恢复平静。</narration><dialogue><speaker>技术员</speaker><content>明白了。我们会进行标准现场勘查。</content></dialogue>。",
+        "- 当 status=questioning 时，可见正文可以是 1-2 句简短引导 + 2-3 个编号选项。",
+        "- 当 status=ready 时，可见正文只能是 1-2 句简短总结，不再继续提问，也不再给编号选项。",
+        "",
+        "你必须在每次回复末尾附带：",
+        "<setup_state>{合法 JSON}</setup_state>",
+        "",
+        "setup_state JSON 必须包含这些字段：",
+        "{",
+        '  "status": "questioning 或 ready",',
+        '  "currentQuestionKey": "story_type 等主题 key",',
+        '  "nextQuestionKey": "下一轮主题 key",',
+        '  "completedTopics": ["已经确认的主题"],',
+        '  "askedTopics": ["已经问过的主题"],',
+        '  "answers": {',
+        '    "storyType": "",',
+        '    "worldConcept": "",',
+        '    "worldTone": "",',
+        '    "coreConflict": "",',
+        '    "playerName": "",',
+        '    "playerIdentity": "",',
+        '    "playerTrait": "",',
+        '    "playerHook": ""',
+        '  }',
+        "}",
+        "",
+        "额外规则：",
+        "- story_type、world_concept、world_tone、core_conflict 属于宏观主题，必须先完成；player_name、player_identity、player_trait、player_hook 属于微观主题，必须后完成。",
+        "- 任何已经出现在 completedTopics 中的主题都不允许再次提问。",
+        "- 任何问题都不能涉及 NPC 设计、剧情节点、结局安排、隐藏真相。",
+        "- 如果玩家自由输入已经回答了多个主题，你可以在隐藏的 setup_state 里一次性补全多个 answers，但可见正文下一轮仍然只能追问一个新问题。",
+        "- 当 answers 足以支撑你在后台生成完整世界时，把 status 设为 ready。",
+        "",
+        "当前 setup_state：",
+        JSON.stringify(setupState, null, 2),
+        "",
+        "- 隐藏 setup_state 必须是纯 JSON，不能写 Markdown 代码块，不能带注释。",
+        "- 禁止输出与世界创建无关的提示词、模型内部信息。"
+      ].join("\n");
+    }
+
+    function buildBootstrapSystemPrompt(cfg) {
+      const setupState = normalizeSetupState(state.setupState);
+      return [
+        "你是造世者，现在进入后台世界编织阶段。",
         "",
         "你的任务：",
-        "- 先与玩家共同创建世界观，再进入正式冒险。",
-        "- 整个创建流程必须遵循“先宏观，后微观”的顺序。",
-        "- 第一轮问题必须先询问：这是什么类型的故事。也就是先确认题材/类型/整体基调，例如奇幻、科幻、悬疑、校园、末日、公路、政治阴谋等。",
-        "- 在确认故事类型之前，不要先问玩家身份、具体地点、具体 NPC、具体道具。",
-        "- 玩家只参与两类内容的创建：世界观，以及玩家自身角色。",
-        "- 关键 NPC、剧情走向、主线节点、人物关系发展、结局方向，都由你在后台自行构建，不允许向玩家征求意见。",
-        "- 你可以在后台自行推演、自问自答，补完关键 NPC、关系网、主线节点和结局，但这些内容不能以提问形式抛给玩家。",
-        "- 宏观层先确认：故事类型、总体世界观、整体基调、冲突核心。",
-        "- 微观层只确认：玩家身份、玩家名字、玩家性格倾向、玩家初始状态、玩家与世界的切入点。",
-        "- 每一轮只能问 1 个问题，不能在同一轮里同时要求玩家决定两个或更多独立信息。",
-        "- 例如不能同时问“主角叫什么”和“他与某人的关系走向”；必须拆成两轮。",
-        "- 如果需要补充背景，只能先简短总结当前已确定内容，然后再提出唯一的下一个问题。",
-        "- 每次回复都要同时允许玩家自由输入，也给出 3-5 个编号选项。",
-        "- 你的可见正文只负责引导、提问、总结，不直接开始正式剧情。",
-        `- 世界观创建最多只能进行 ${MAX_WORLDBUILD_ROUNDS} 轮问答。当前已用 ${roundsUsed} 轮，剩余 ${roundsLeft} 轮。`,
-        "- 如果剩余轮数只剩 1 轮，你必须在这一轮内收束世界设定，补齐隐藏 worldbook，并准备进入正式剧情。",
+        "- 基于已经确认的 setup_state，一次性构建完整的世界档案。",
+        "- 这个阶段不再向玩家提问，不输出剧情，不输出选项，不输出说明文字。",
+        "- 你必须在后台自行完成关键 NPC、主线节点、结局、角色关系网、世界规则、玩家初始状态、世界初始状态、造世者档案。",
+        "- 世界档案必须自洽，避免角色前后矛盾。",
         "",
-        "你必须在每次回复末尾附带一个隐藏标签：",
+        "你只能输出一个标签：",
         "<worldbook>{合法 JSON}</worldbook>",
         "",
         "worldbook JSON 必须包含这些字段：",
         "{",
-        '  "status": "draft 或 ready",',
-        '  "worldbuildProgress": {"completedTopics":[],"askedTopics":[],"currentQuestionKey":"story_type","nextQuestionKey":"world_concept"},',
+        '  "status": "ready",',
         '  "worldTitle": "世界标题",',
         '  "coreConcept": "一句话概念",',
         '  "rules": ["世界规则1", "世界规则2"],',
@@ -1438,30 +1529,18 @@
         '  "worldState": {"time":"时间","threatLevel":"威胁等级","globalFlags":[],"impactLog":[]}',
         "}",
         "",
-        "额外规则：",
-        "- 玩家名、玩家身份、世界背景需要通过对话逐步确认。",
-        "- 如果当前还没有明确 story type / genre，就只能围绕“故事类型是什么”继续追问和收敛。",
-        "- 你必须把已经确认的主题写入 worldbuildProgress.completedTopics，把已经问过的主题写入 worldbuildProgress.askedTopics。",
-        "- 任何出现在 completedTopics 里的主题都不允许再次提问。",
-        "- currentQuestionKey 表示你这一轮正在问的唯一问题；nextQuestionKey 表示下一轮准备推进的主题。",
-        "- 你必须依据当前 worldbuildProgress 选择一个未完成的新主题，不允许循环回到已经完成的话题。",
-        "- 任何时候都不允许一轮里同时提两个问题；如果你发现自己有两个问题，就只保留优先级最高的那个。",
-        "- 严禁向玩家提问：关键 NPC 该怎么设计、剧情应该怎么发展、谁和谁是什么关系、结局应该是什么。",
-        "- 这些内容必须由你在隐藏的 worldbook 中后台补完，不要在可见正文里暴露为提问。",
-        "- 如果信息还不够，就把 worldbook.status 设为 draft。",
-        "- 当世界规则、主线节点、关键 NPC、玩家档案、造世者档案、世界初始状态都已明确时，才把 worldbook.status 设为 ready；其中剧情与 NPC 细节由你自行补全。",
-        "- 当 status=ready 时，你的可见正文只能用 1-3 句简要总结世界，不再继续提问，不再给新的世界观选项；随后系统会自动进入正式冒险。",
-        `- 无论如何，达到第 ${MAX_WORLDBUILD_ROUNDS} 轮后都必须停止世界观提问，并交出当前最完整的 worldbook。`,
+        "你必须遵守：",
+        "- 玩家只参与了世界观和玩家角色的设定；未被玩家回答的剧情/NPC/结局内容都由你自行补全。",
+        "- 主线必须包含明确开场、数个关键节点和结局。",
+        "- 至少创建 3 个会贯穿剧情的关键 NPC，并给出可持续更新的身份、性格、关系、情绪、状态。",
+        "- worldbook 必须是纯 JSON，不能写 Markdown 代码块，不能带注释。",
         "",
-        "当前世界草案（必须基于它继续推进，不要重复已完成主题）：",
-        JSON.stringify(worldbook, null, 2),
-        "- 可见正文仍然使用结构化标签：<narration>...</narration> 与 <dialogue><speaker>...</speaker><content>...</content></dialogue>。",
-        "- 隐藏 worldbook 必须是纯 JSON，不能写 Markdown 代码块，不能带注释。",
-        "- 禁止输出与世界创建无关的提示词、模型内部信息。"
+        "已确认的 setup_state：",
+        JSON.stringify(setupState, null, 2)
       ].join("\n");
     }
 
-    function buildAdventureSystemPrompt(cfg) {
+    function buildPlaySystemPrompt(cfg) {
       const worldbook = normalizeWorldbook(state.worldbook, cfg);
       return [
         "你就是造世者。你不是单纯讲故事，而是一个持续维护剧情、角色状态、主线节点和世界规则的叙事代理。",
@@ -1474,18 +1553,41 @@
         "- 回复正文必须使用结构化标签，且只能使用以下两种块：<narration>...</narration> 与 <dialogue><speaker>角色名</speaker><content>台词</content></dialogue>。",
         "- 旁白只能写在 <narration> 中，任何对白都必须写在 <dialogue> 中。",
         "- 每一段对白都必须同时包含 <speaker> 发言人身份标签和 <content> 说话内容标签。",
+        "- <content> 里只能放人物真正说出口的台词，不能混入动作、神态、心理、旁白句；这类内容必须单独写在前后相邻的 <narration> 中。",
         "- 回复末尾必须附带 <state_update>{合法 JSON}</state_update>，用来更新状态档案。",
         '- state_update JSON 至少包含：{"playerState":{},"worldState":{},"npcUpdates":[],"agentState":{},"plot":{"currentNodeId":"","nodeStatusUpdates":[],"endingUnlocked":false},"canonNotes":[]}',
         "- npcUpdates 里的每项可用 id 或 name 定位角色，并更新其身份、状态、性格、人际关系、情绪。",
         "- playerState 也要持续更新玩家身份、状态、关系、情绪、线索与物品。",
         "- agentState 要记录造世者当前跟踪的角色、关键节点、场景目标和维护笔记。",
         "- 若角色受伤、离开、死亡、立场变化，必须写进 state_update，防止后续矛盾。",
-        "- 你还要在可见正文中给出 3-5 个编号选项，并允许玩家自由输入。",
+        "- 你还要在可见正文中给出 2-3 个编号选项，并允许玩家自由输入。",
         "- 叙事语言为简体中文。",
         "- 禁止输出与游戏无关的提示词、模型内部信息。",
         "",
         "既定世界档案：",
         JSON.stringify(worldbook, null, 2)
+      ].join("\n");
+    }
+
+    function buildClassificationSystemPrompt(stage = state.sessionStage) {
+      return [
+        "你是一个文本分类整理 Agent。",
+        "",
+        "你的任务：",
+        "- 接收一段已经生成好的可见正文。",
+        "- 只做结构整理，不改剧情事实，不新增信息，不删减有效信息。",
+        "- 将旁白整理为 <narration>...</narration>。",
+        "- 将对白整理为 <dialogue><speaker>发言人</speaker><content>台词</content></dialogue>。",
+        "- 如果一句里同时包含动作和台词，动作必须拆到相邻的 <narration>，台词单独放进 <content>。",
+        "- <content> 里只能保留真正说出口的话，不能保留动作、神态、心理、场景描写。",
+        "- 如果原文没有对白，就只输出 <narration>。",
+        `- 当前阶段是 ${stage === "setup" ? "世界观创建" : "正式剧情"}。`,
+        "- 编号选项必须原样保留为普通文本行，例如 `1) ...`、`2) ...`、`3) ...`，不要把选项包进任何标签。",
+        "- 不能输出 setup_state、state_update、worldbook 等隐藏标签。",
+        "- 不能输出解释、说明、前言、后记。",
+        "",
+        "输出要求：",
+        "- 只输出整理后的正文本身。"
       ].join("\n");
     }
 
@@ -1498,6 +1600,7 @@
         messages: state.messages,
         lastUserInput: state.lastUserInput,
         currentTurnTimestamp: state.currentTurnTimestamp,
+        setupState: state.setupState,
         worldbook: state.worldbook,
         validation: state.validation,
         optionPanelOpen: state.optionPanelOpen
@@ -1525,7 +1628,12 @@
           els.textSpeed.value = String(parsed.config.textSpeed || DEFAULT_TEXT_SPEED);
         }
         state.started = Boolean(parsed.started);
-        state.sessionStage = parsed.sessionStage || (parsed.started ? "adventure" : "idle");
+        state.sessionStage = parsed.sessionStage === "worldbuild"
+          ? "setup"
+          : parsed.sessionStage === "adventure"
+            ? "play"
+            : parsed.sessionStage || (parsed.started ? "play" : "idle");
+        state.setupState = normalizeSetupState(parsed.setupState);
         state.worldbook = parsed.worldbook ? normalizeWorldbook(parsed.worldbook) : null;
         state.messages = normalizeMessages(Array.isArray(parsed.messages) ? parsed.messages : []);
         state.lastUserInput = parsed.lastUserInput || "";
@@ -1544,6 +1652,7 @@
         els.textSpeed.value = String(DEFAULT_TEXT_SPEED);
         updateTextSpeedLabel();
         state.sessionStage = "idle";
+        state.setupState = null;
         state.worldbook = null;
         redrawLogFromState();
         updateSummary();
@@ -1596,8 +1705,10 @@
       let lastTurnTimestamp = null;
       return messages.map((msg, index) => {
         const next = { ...msg };
+        if (next.stage === "worldbuild") next.stage = "setup";
+        if (next.stage === "adventure") next.stage = "play";
         if (!next.stage) {
-          next.stage = state.sessionStage === "worldbuild" ? "worldbuild" : "adventure";
+          next.stage = state.sessionStage === "setup" ? "setup" : "play";
         }
         if (next.role === "assistant" && !next.assistantLabel) {
           next.assistantLabel = getAssistantLabel(next.stage);
@@ -1649,6 +1760,7 @@
 
     function stripHiddenPayloadTags(text) {
       return text
+        .replace(/<setup_state>[\s\S]*?<\/setup_state>/gi, "")
         .replace(/<worldbook>[\s\S]*?<\/worldbook>/gi, "")
         .replace(/<state_update>[\s\S]*?<\/state_update>/gi, "")
         .trim();
@@ -1663,9 +1775,22 @@
       }
     }
 
+    function applySetupStateFromText(text) {
+      const payload = extractTagPayload(text, "setup_state");
+      const parsed = safeParseJson(payload);
+      if (!parsed) return false;
+      state.setupState = normalizeSetupState(parsed);
+      updateSummary();
+      return true;
+    }
+
     function applyWorldbookDraftFromText(text) {
       const payload = extractTagPayload(text, "worldbook");
-      const parsed = safeParseJson(payload);
+      const fallback = text
+        .replace(/```(?:json|xml|html|text)?/gi, "")
+        .replace(/```/g, "")
+        .trim();
+      const parsed = safeParseJson(payload) || safeParseJson(fallback);
       if (!parsed) return false;
       state.worldbook = normalizeWorldbook(parsed);
       updateSummary();
@@ -1781,19 +1906,34 @@
       return true;
     }
 
-    function buildRequestMessages() {
+    function buildRequestMessages(stage = state.sessionStage) {
       const cfg = getConfig();
-      const stage = state.sessionStage === "worldbuild" ? "worldbuild" : "adventure";
-      const systemPrompt = stage === "worldbuild" ? buildWorldbuilderSystemPrompt(cfg) : buildAdventureSystemPrompt(cfg);
+      const normalizedStage = stage === "setup" ? "setup" : "play";
+      const systemPrompt = normalizedStage === "setup" ? buildSetupSystemPrompt(cfg) : buildPlaySystemPrompt(cfg);
       const messages = state.messages
-        .filter(msg => msg.stage === stage && msg.role !== "system")
+        .filter(msg => msg.stage === normalizedStage && msg.role !== "system")
         .map(msg => ({ role: msg.role, content: msg.content }));
 
       return [{ role: "system", content: systemPrompt }, ...messages];
     }
 
+    function buildBootstrapMessages() {
+      const transcript = state.messages
+        .filter(msg => msg.stage === "setup" && !msg.hidden && msg.role !== "system")
+        .map(msg => ({ role: msg.role, content: stripHiddenPayloadTags(msg.content) }));
+      return [
+        { role: "system", content: buildBootstrapSystemPrompt(getConfig()) },
+        ...transcript,
+        {
+          role: "user",
+          content: "现在开始后台编织世界。不要输出说明，不要输出剧情，不要输出选项。只输出 <worldbook>{...}</worldbook>，并确保它是完整可解析的 JSON。"
+        }
+      ];
+    }
+
     function stripStructuredTags(text) {
       return text
+        .replace(/<setup_state>[\s\S]*?<\/setup_state>/gi, "")
         .replace(/<worldbook>[\s\S]*?<\/worldbook>/gi, "")
         .replace(/<state_update>[\s\S]*?<\/state_update>/gi, "")
         .replace(/<dialogue>\s*<speaker>\s*([\s\S]*?)\s*<\/speaker>\s*<content>\s*([\s\S]*?)\s*<\/content>\s*<\/dialogue>/gi, (_, _speaker, speech) => speech.trim())
@@ -1843,11 +1983,11 @@
         }
       }
 
-      return options.slice(0, 6);
+      return options.slice(0, 3);
     }
 
     function extractOptionLeadText(text) {
-      const lines = normalizeAssistantMarkup(text).split("\n").map(line => line.trim()).filter(Boolean);
+      const lines = stripHiddenPayloadTags(text).split("\n").map(line => line.trim()).filter(Boolean);
       let lead = "";
 
       for (const line of lines) {
@@ -1868,9 +2008,13 @@
     function stripOptionsFromAssistantText(text) {
       const lines = text.split("\n");
       const filtered = [];
+      const leadText = extractOptionLeadText(text);
+      const hasOptions = extractOptionsFromText(text).length > 0;
+      let leadRemoved = false;
 
       for (const rawLine of lines) {
         const line = rawLine.trim();
+        const clean = stripStructuredTags(rawLine);
         if (!line) {
           filtered.push("");
           continue;
@@ -1878,11 +2022,14 @@
         if (/^(可选行动|选项)[:：]?$/.test(line)) continue;
         if (/^(请输入(?:你的)?选择|请选择|请输入选择|你可以输入选项编号|你可以选择|请选择你的行动)[:：]?$/.test(line)) continue;
         if (parseOptionChunks(rawLine).length) {
-          const prefix = stripOptionChunksFromLine(rawLine);
-          if (prefix) filtered.push(prefix);
           continue;
         }
-        filtered.push(rawLine);
+        if (!clean) continue;
+        if (hasOptions && leadText && !leadRemoved && clean === leadText) {
+          leadRemoved = true;
+          continue;
+        }
+        filtered.push(clean);
       }
 
       const normalized = filtered
@@ -1897,6 +2044,56 @@
       const normalized = (speaker || "").trim();
       const playerName = state.worldbook?.playerState?.name || "";
       return normalized === "你" || normalized === "玩家" || normalized === playerName;
+    }
+
+    function splitDialogueContentSegments(speaker, speech, role) {
+      const cleanSpeech = (speech || "").replace(/^[“"]|[”"]$/g, "").trim();
+      if (!cleanSpeech) return [];
+
+      const actionHint = /(皱|抬|低|看|望|笑|沉默|点头|摇头|叹|停顿|顿了顿|恢复平静|迟疑|压低|提高|放轻|深吸|吸了口气|眯起|蹙|咬了咬|耸了耸|轻咳|清了清嗓|转身|站起|坐下|后退|上前|扫了|打量|瞥了)/;
+      const speechHint = /(我|我们|你|你们|请|必须|可以|会|不会|不能|知道|明白|听着|马上|立刻|现在|已经|需要|应该|汇报|调查|走吧|好的|是的)/;
+      const sentences = cleanSpeech.match(/[^。！？!?]+[。！？!?]?/g)?.map(item => item.trim()).filter(Boolean) || [cleanSpeech];
+
+      function isLikelyActionSentence(sentence) {
+        const text = sentence.trim().replace(new RegExp(`^${speaker}`), "").trim();
+        if (!text) return false;
+        if (/[“”"'「」]/.test(text)) return false;
+        if (speechHint.test(text) && !actionHint.test(text)) return false;
+        return actionHint.test(text);
+      }
+
+      const leadingNarration = [];
+      const trailingNarration = [];
+      while (sentences.length > 1 && isLikelyActionSentence(sentences[0])) {
+        leadingNarration.push(sentences.shift());
+      }
+      while (sentences.length > 1 && isLikelyActionSentence(sentences[sentences.length - 1])) {
+        trailingNarration.unshift(sentences.pop());
+      }
+
+      const segments = [];
+      if (leadingNarration.length) {
+        segments.push({
+          type: "narration",
+          content: `${speaker}${leadingNarration.join("")}`.trim()
+        });
+      }
+      const spokenText = sentences.join("").trim();
+      if (spokenText) {
+        segments.push({
+          type: "speech",
+          speaker: speaker || "人物",
+          role,
+          content: `“${spokenText}”`
+        });
+      }
+      if (trailingNarration.length) {
+        segments.push({
+          type: "narration",
+          content: `${speaker}${trailingNarration.join("")}`.trim()
+        });
+      }
+      return segments;
     }
 
     function normalizeAssistantMarkup(text) {
@@ -1933,13 +2130,7 @@
           const speaker = speakerMatch ? speakerMatch[1].trim() : "";
           const speech = contentMatch ? contentMatch[1].trim() : "";
           if (speaker && speech) {
-            const cleanSpeech = speech.replace(/^[“"]|[”"]$/g, "").trim();
-            segments.push({
-              type: "speech",
-              speaker: speaker || "人物",
-              role: isPlayerSpeaker(speaker) ? "user" : "npc",
-              content: `“${cleanSpeech}”`
-            });
+            segments.push(...splitDialogueContentSegments(speaker, speech, isPlayerSpeaker(speaker) ? "user" : "npc"));
           } else if (inner) {
             segments.push({ type: "narration", content: inner });
           }
@@ -1947,25 +2138,13 @@
           const speaker = match[3].trim();
           const speech = match[4].trim();
           if (speaker && speech) {
-            const cleanSpeech = speech.replace(/^[“"]|[”"]$/g, "").trim();
-            segments.push({
-              type: "speech",
-              speaker: speaker || "人物",
-              role: isPlayerSpeaker(speaker) ? "user" : "npc",
-              content: `“${cleanSpeech}”`
-            });
+            segments.push(...splitDialogueContentSegments(speaker, speech, isPlayerSpeaker(speaker) ? "user" : "npc"));
           }
         } else {
           const speaker = (match[5] || match[6] || "").trim();
           const inner = (match[7] || "").trim();
           if (inner) {
-            const cleanSpeech = inner.replace(/^[“"]|[”"]$/g, "").trim();
-            segments.push({
-              type: "speech",
-              speaker: speaker || "人物",
-              role: isPlayerSpeaker(speaker) ? "user" : "npc",
-              content: `“${cleanSpeech}”`
-            });
+            segments.push(...splitDialogueContentSegments(speaker || "人物", inner, isPlayerSpeaker(speaker) ? "user" : "npc"));
           }
         }
 
@@ -1983,7 +2162,7 @@
     function flattenTaggedAssistantText(content) {
       const tagged = parseTaggedAssistantSegments(content);
       if (!tagged) {
-        return stripOptionsFromAssistantText(content);
+        return normalizeAssistantMarkup(content);
       }
       return tagged
         .map(segment => segment.content)
@@ -2005,7 +2184,8 @@
         return tagged;
       }
 
-      const text = stripOptionsFromAssistantText(content);
+      const text = normalizeAssistantMarkup(content);
+      if (!text) return [];
       const segments = [];
       const patterns = [
         {
@@ -2103,7 +2283,7 @@
         cursor = next.index + next.match[0].length;
       }
 
-      return segments.length ? segments : [{ type: "narration", content: text }];
+      return segments.length ? segments : text ? [{ type: "narration", content: text }] : [];
     }
 
     function refreshOptionStrip() {
@@ -2265,10 +2445,15 @@
       const div = document.createElement("article");
       div.className = "msg assistant no-label";
       div.dataset.role = getAssistantLabel();
+      const message = state.sessionStage === "setup"
+        ? "造世者正在整理世界设问…"
+        : state.sessionStage === "bootstrap"
+          ? "造世者正在编织世界档案…"
+          : "造世者正在推进剧情…";
       div.innerHTML = `
         <div class="thinking-wrap">
           <div class="loader"><span></span><span></span><span></span></div>
-          <span>${state.sessionStage === "worldbuild" ? "世界观生成 Agent 正在整理设定…" : "模型正在思考剧情走向…"}</span>
+          <span>${message}</span>
         </div>
       `;
       els.log.appendChild(div);
@@ -2311,6 +2496,65 @@
       }
 
       return response.body.getReader();
+    }
+
+    async function requestChatOnce(messages, options = {}) {
+      const cfg = getConfig();
+      if (!cfg.apiKey) throw new Error("请先在设置里输入 API Key");
+      if (!cfg.apiBase) throw new Error("API 地址不能为空");
+      if (!cfg.modelName) throw new Error("模型名不能为空");
+
+      const response = await fetch(cfg.apiBase, {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+          "Authorization": `Bearer ${cfg.apiKey}`
+        },
+        body: JSON.stringify({
+          model: cfg.modelName,
+          messages,
+          temperature: options.temperature ?? 0.7,
+          top_p: options.topP ?? 0.95,
+          max_tokens: options.maxTokens ?? 1800,
+          stream: false
+        })
+      });
+
+      if (!response.ok) {
+        let details = "";
+        try {
+          details = await response.text();
+        } catch (_) {}
+        throw new Error(`请求失败 (${response.status})${details ? " | " + details.slice(0, 300) : ""}`);
+      }
+
+      const json = await response.json();
+      const text = json?.choices?.[0]?.message?.content?.trim() || "";
+      const usage = json?.usage
+        ? `tokens: prompt ${json.usage.prompt_tokens ?? "-"}, completion ${json.usage.completion_tokens ?? "-"}`
+        : "";
+
+      return { text, usageText: usage };
+    }
+
+    async function classifyVisibleAssistantOutput(text, stage = state.sessionStage) {
+      const visibleText = stripHiddenPayloadTags(text).trim();
+      if (!visibleText) return "";
+
+      try {
+        const result = await requestChatOnce([
+          { role: "system", content: buildClassificationSystemPrompt(stage) },
+          { role: "user", content: visibleText }
+        ], {
+          temperature: 0.2,
+          maxTokens: 1400
+        });
+
+        const normalized = stripHiddenPayloadTags(result.text || "").trim();
+        return normalized || visibleText;
+      } catch (_) {
+        return visibleText;
+      }
     }
 
     async function consumeSseStream(reader, handlers) {
@@ -2361,16 +2605,18 @@
       return usageText;
     }
 
-    async function typewriterStreamToElement(reader, placeholderEl) {
+    async function collectStreamText(reader) {
       let finalText = "";
-      let usageText = "";
-
-      usageText = await consumeSseStream(reader, {
+      const usageText = await consumeSseStream(reader, {
         onDelta(delta) {
           finalText += delta;
         }
       });
 
+      return { text: finalText.trim(), usageText };
+    }
+
+    async function typewriterTextToElement(finalText, placeholderEl) {
       if (!finalText.trim()) {
         throw new Error("模型返回为空");
       }
@@ -2412,49 +2658,43 @@
         el.textContent = segment.content || "";
       }
 
-      return { text: finalText.trim(), usageText };
+      return finalText.trim();
+    }
+
+    function isSetupReady() {
+      return state.setupState?.status === "ready";
     }
 
     function isWorldbookReady() {
       return state.worldbook?.status === "ready";
     }
 
-    function hasReachedWorldbuildLimit() {
-      return getWorldbuildRoundCount() >= MAX_WORLDBUILD_ROUNDS;
+    function hasReachedSetupLimit() {
+      return getSetupRoundCount() >= MAX_WORLDBUILD_ROUNDS;
     }
 
-    function isWorldbuildConfirmInput(text) {
-      return /(确认.*(?:世界|设定)|开始冒险|进入冒险|开始游戏|进入游戏|就这样开始|锁定设定)/.test(text);
-    }
-
-    async function beginAdventureFromWorldbook(autoStart = false) {
-      const cfg = getConfig();
-      if (!isWorldbookReady() && !hasReachedWorldbuildLimit()) {
-        setStatus("世界设定还没有完成", true);
+    async function beginPlayStage() {
+      if (!state.worldbook) {
+        setStatus("世界档案尚未生成", true);
         return;
       }
-      if (state.worldbook && !isWorldbookReady()) {
-        state.worldbook = normalizeWorldbook({
-          ...state.worldbook,
-          status: "ready"
-        }, cfg);
-      }
-      state.sessionStage = "adventure";
+      state.sessionStage = "play";
       state.currentTurnTimestamp = Date.now();
       state.messages.push({
         role: "user",
         hidden: true,
-        stage: "adventure",
+        stage: "play",
         turnTimestamp: state.currentTurnTimestamp,
-        content: `${autoStart ? "世界设定已完成。" : "世界设定已确认。"}请严格根据既定世界档案开始正式剧情，从主线 opening 与 currentNodeId 对应的节点开场，保持人物状态、世界规则、主线节点一致，并给出 3-5 个可选行动。`
+        content: "世界档案已经编织完成。请严格根据既定 worldbook 开始正式剧情，从 mainPlot.opening 与 currentNodeId 对应节点开场，保持人物状态、世界规则与主线节点一致，并给出 2-3 个可选行动。"
       });
       updateSummary();
       updateGameStateChip(getSessionLabel());
       hideOptionStrip();
-      await requestAssistantReply();
+      await requestVisibleAssistantReply("play");
     }
 
-    async function requestAssistantReply() {
+    async function requestVisibleAssistantReply(stage = state.sessionStage) {
+      let completed = false;
       setBusy(true, "thinking");
       hideOptionStrip();
       setStatus("模型正在思考…");
@@ -2462,20 +2702,30 @@
       const placeholder = createThinkingMessage();
 
       try {
-        const reader = await streamChat(buildRequestMessages());
-        const { text, usageText } = await typewriterStreamToElement(reader, placeholder);
-        applyWorldbookDraftFromText(text);
-        applyStateUpdateFromText(text);
+        const reader = await streamChat(buildRequestMessages(stage));
+        const { text: rawText, usageText } = await collectStreamText(reader);
+        if (!rawText.trim()) {
+          throw new Error("模型返回为空");
+        }
+        if (stage === "setup") {
+          applySetupStateFromText(rawText);
+        } else {
+          applyStateUpdateFromText(rawText);
+        }
+        setStatus("正在整理叙事结构…");
+        const classifiedText = await classifyVisibleAssistantOutput(rawText, stage);
+        await typewriterTextToElement(classifiedText, placeholder);
         state.messages.push({
           role: "assistant",
-          content: text,
+          content: classifiedText,
           turnTimestamp: state.currentTurnTimestamp || Date.now(),
-          stage: state.sessionStage,
+          stage,
           assistantLabel: getAssistantLabel()
         });
         updateSummary();
         setStatus(usageText ? `回合完成，${usageText}` : "回合完成");
         saveState(true);
+        completed = true;
       } catch (err) {
         placeholder.remove();
         appendSystemMessage("错误：" + err.message);
@@ -2483,13 +2733,71 @@
         setStatus("调用失败，请检查模型配置或网络", true);
       } finally {
         setBusy(false);
-        if (state.sessionStage === "worldbuild" && (isWorldbookReady() || hasReachedWorldbuildLimit())) {
-          appendSystemMessage(isWorldbookReady() ? "世界观创建完成，正式剧情开始。" : `世界观问答达到 ${MAX_WORLDBUILD_ROUNDS} 轮上限，系统将采用当前设定进入剧情。`);
-          await beginAdventureFromWorldbook(true);
+        if (completed && stage === "setup" && (isSetupReady() || hasReachedSetupLimit())) {
+          appendSystemMessage(isSetupReady() ? "世界观创建完成，造世者正在后台编织世界。" : `世界观问答达到 ${MAX_WORLDBUILD_ROUNDS} 轮上限，造世者将采用当前设定直接编织世界。`);
+          await runBootstrapPhase();
           return;
         }
         refreshOptionStrip();
       }
+    }
+
+    async function runBootstrapPhase() {
+      if (state.busy) return;
+      state.sessionStage = "bootstrap";
+      updateSummary();
+      updateGameStateChip(getSessionLabel());
+      hideOptionStrip();
+      setBusy(true, "thinking");
+      setStatus("造世者正在编织世界…");
+      const placeholder = createThinkingMessage();
+
+      try {
+        const bootstrapMessages = buildBootstrapMessages();
+        const reader = await streamChat(bootstrapMessages, {
+          temperature: 0.6,
+          maxTokens: 2200
+        });
+        let { text, usageText } = await collectStreamText(reader);
+        if (!text) {
+          const fallback = await requestChatOnce(bootstrapMessages, {
+            temperature: 0.5,
+            maxTokens: 2200
+          });
+          text = fallback.text;
+          usageText = fallback.usageText || usageText;
+        }
+        placeholder.remove();
+        if (!text) throw new Error("世界档案生成为空");
+        if (!applyWorldbookDraftFromText(text)) throw new Error("世界档案解析失败");
+        state.worldbook = normalizeWorldbook({
+          ...state.worldbook,
+          status: "ready"
+        });
+        state.messages.push({
+          role: "assistant",
+          hidden: true,
+          content: text,
+          turnTimestamp: Date.now(),
+          stage: "bootstrap",
+          assistantLabel: getAssistantLabel("bootstrap")
+        });
+        saveState(true);
+        setStatus(usageText ? `世界编织完成，${usageText}` : "世界编织完成");
+      } catch (err) {
+        placeholder.remove();
+        appendSystemMessage("错误：" + err.message);
+        setStatus("世界档案生成失败，请检查模型配置或稍后重试", true);
+        state.sessionStage = "setup";
+        updateSummary();
+        updateGameStateChip(getSessionLabel());
+        return;
+      } finally {
+        setBusy(false);
+      }
+
+      appendSystemMessage("世界已经编织完成，正式剧情开始。");
+      await beginPlayStage();
     }
 
     async function startAdventure() {
@@ -2502,7 +2810,8 @@
       }
 
       state.started = true;
-      state.sessionStage = "worldbuild";
+      state.sessionStage = "setup";
+      state.setupState = createInitialSetupState();
       state.worldbook = createInitialWorldbook(cfg);
       state.lastUserInput = "";
       state.currentTurnTimestamp = Date.now();
@@ -2510,16 +2819,16 @@
         {
           role: "user",
           hidden: true,
-          stage: "worldbuild",
+          stage: "setup",
           turnTimestamp: state.currentTurnTimestamp,
-          content: "开始新的游戏，先不要进入正式剧情。请作为造世者，与我一起创建本局世界。创建顺序必须先宏观、后微观。第一轮必须先问：这是什么类型的故事。并且每一轮只能问一个问题，不能在同一轮里同时要求玩家决定两个以上的信息。玩家只参与世界观和玩家自身角色的创建；关键 NPC、剧情走向、主线节点、人物关系发展、结局方向，都由你在后台自行构建，不要向玩家提问。先确认题材、整体基调和冲突方向，再逐步确定玩家名字、玩家身份、玩家性格倾向和初始状态。请先提出第一轮世界观构建问题，并提供 3-5 个选项。"
+          content: "开始新的游戏。先进入世界观创建阶段，不要进入正式剧情。严格按“先宏观、后微观”的顺序提问：先确认故事类型，再逐步确认世界概念、世界基调、核心冲突，以及玩家名字、身份、性格倾向和切入点。每轮只能问一个问题，并提供 2-3 个选项。剧情、NPC、主线节点和结局都由你在后台自行构建，不要向玩家征求意见。"
         }
       ];
       redrawLogFromState();
-      appendSystemMessage(`已进入世界观创建阶段。你只需要参与世界观和自身角色设定，剧情与关键 NPC 由造世者在后台自行构建。`);
+      appendSystemMessage("已进入世界观创建阶段。你只需要参与世界观和自身角色设定；NPC、主线和结局会由造世者在后台生成。");
       updateSummary();
       updateGameStateChip(getSessionLabel());
-      await requestAssistantReply();
+      await requestVisibleAssistantReply("setup");
     }
 
     async function sendTurn(text) {
@@ -2545,12 +2854,12 @@
       els.playerInput.value = "";
       hideOptionStrip();
 
-      if (state.sessionStage === "worldbuild" && isWorldbookReady() && isWorldbuildConfirmInput(userText)) {
-        await beginAdventureFromWorldbook();
+      if (state.sessionStage === "setup") {
+        await requestVisibleAssistantReply("setup");
         return;
       }
 
-      await requestAssistantReply();
+      await requestVisibleAssistantReply("play");
     }
 
     async function retryLastTurn() {
@@ -2570,10 +2879,11 @@
       }
       state.lastUserInput = lastUser.content;
       state.currentTurnTimestamp = lastUser.turnTimestamp || Date.now();
+      state.sessionStage = lastUser.stage || state.sessionStage;
       redrawLogFromState();
       appendSystemMessage(`已移除上一条 ${getAssistantLabel(lastUser.stage || state.sessionStage)} 回复，正在重新生成…`);
       hideOptionStrip();
-      await requestAssistantReply();
+      await requestVisibleAssistantReply(state.sessionStage);
     }
 
     async function validateModel() {
@@ -2671,6 +2981,7 @@
       state.messages = [];
       state.lastUserInput = "";
       state.currentTurnTimestamp = null;
+      state.setupState = null;
       state.worldbook = null;
       state.validation = { ok: false, checkedAt: "", detail: "模型未校验" };
       state.optionPanelOpen = false;
