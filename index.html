@@ -4,78 +4,87 @@
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <title>纸页与荧屏</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=Noto+Serif+SC:wght@400;600;700;900&family=LXGW+WenKai+Mono+TC&family=Ma+Shan+Zheng&family=Press+Start+2P&family=VT323&display=swap" rel="stylesheet" />
   <style>
     :root {
-      --bg: #f4ead6;
-      --bg-accent: #e7d6b5;
-      --panel: rgba(255, 250, 240, 0.86);
+      --bg: #f0e6d0;
+      --bg-accent: #e2d2b4;
+      --panel: rgba(255, 250, 240, 0.88);
       --panel-strong: rgba(255, 248, 234, 0.96);
-      --text: #342819;
-      --muted: #776650;
-      --line: rgba(102, 77, 46, 0.22);
-      --accent: #8d5b2f;
-      --accent-strong: #68411d;
-      --accent-text: #fff9f0;
-      --user-bg: rgba(141, 91, 47, 0.14);
-      --assistant-bg: rgba(255, 255, 255, 0.68);
-      --system-bg: rgba(77, 58, 39, 0.08);
-      --input-bg: rgba(255, 252, 245, 0.92);
-      --shadow: 0 22px 60px rgba(82, 57, 27, 0.18);
+      --text: #2e2013;
+      --muted: #7a6a52;
+      --line: rgba(102, 77, 46, 0.18);
+      --accent: #9e5a20;
+      --accent-strong: #7a4215;
+      --accent-glow: rgba(158, 90, 32, 0.25);
+      --accent-text: #fffaf2;
+      --user-bg: rgba(158, 90, 32, 0.10);
+      --assistant-bg: rgba(255, 255, 255, 0.62);
+      --system-bg: rgba(77, 58, 39, 0.06);
+      --input-bg: rgba(255, 252, 245, 0.94);
+      --shadow: 0 24px 80px rgba(82, 57, 27, 0.14), 0 4px 16px rgba(82, 57, 27, 0.08);
       --glow: none;
-      --header-font: "STKaiti", "KaiTi", "Baskerville", "Times New Roman", serif;
-      --body-font: "Kaiti SC", "STKaiti", "Songti SC", "Georgia", serif;
-      --mono-font: "Courier New", "Monaco", monospace;
-      --texture-opacity: 0.09;
-      --paper-line: rgba(120, 92, 62, 0.08);
-      --cursor: rgba(104, 65, 29, 0.9);
+      --header-font: "Ma Shan Zheng", "STKaiti", "KaiTi", "Baskerville", serif;
+      --body-font: "Noto Serif SC", "Songti SC", "Georgia", serif;
+      --mono-font: "LXGW WenKai Mono TC", "Courier New", monospace;
+      --texture-opacity: 0.07;
+      --paper-line: rgba(120, 92, 62, 0.06);
+      --cursor: rgba(158, 90, 32, 0.85);
+      --radius-xl: 32px;
+      --radius-lg: 24px;
+      --radius-md: 18px;
+      --radius-sm: 14px;
+      --scroll-fade: linear-gradient(to bottom, transparent, var(--panel-strong) 48px, var(--panel-strong) calc(100% - 48px), transparent);
     }
 
     body[data-theme="crt"] {
-      --bg: #07140c;
-      --bg-accent: #133721;
-      --panel: rgba(5, 24, 14, 0.9);
-      --panel-strong: rgba(4, 16, 10, 0.96);
-      --text: #9df6b7;
-      --muted: #5eb978;
-      --line: rgba(107, 255, 163, 0.18);
-      --accent: #73ff99;
-      --accent-strong: #2ca557;
-      --accent-text: #03210d;
-      --user-bg: rgba(115, 255, 153, 0.08);
-      --assistant-bg: rgba(7, 27, 16, 0.82);
-      --system-bg: rgba(115, 255, 153, 0.05);
-      --input-bg: rgba(2, 15, 8, 0.96);
-      --shadow: 0 24px 80px rgba(0, 0, 0, 0.45);
-      --glow: 0 0 18px rgba(115, 255, 153, 0.15);
-      --header-font: "Press Start 2P", "Silkscreen", "Pixelify Sans", "VT323", "Courier New", monospace;
-      --body-font: "Press Start 2P", "Silkscreen", "Pixelify Sans", "VT323", "Courier New", monospace;
-      --mono-font: "Press Start 2P", "Silkscreen", "Pixelify Sans", "VT323", "Courier New", monospace;
+      --bg: #050e08;
+      --bg-accent: #0a1f12;
+      --panel: rgba(4, 18, 10, 0.92);
+      --panel-strong: rgba(3, 12, 7, 0.97);
+      --text: #8cf0a8;
+      --muted: #4fad6a;
+      --line: rgba(100, 240, 150, 0.14);
+      --accent: #5cff88;
+      --accent-strong: #28a050;
+      --accent-glow: rgba(92, 255, 136, 0.12);
+      --accent-text: #021a08;
+      --user-bg: rgba(92, 255, 136, 0.07);
+      --assistant-bg: rgba(6, 22, 12, 0.85);
+      --system-bg: rgba(92, 255, 136, 0.04);
+      --input-bg: rgba(2, 12, 6, 0.96);
+      --shadow: 0 24px 80px rgba(0, 0, 0, 0.5), 0 0 1px rgba(92, 255, 136, 0.3);
+      --glow: 0 0 24px rgba(92, 255, 136, 0.08);
+      --header-font: "Press Start 2P", "VT323", "Courier New", monospace;
+      --body-font: "VT323", "Press Start 2P", "Courier New", monospace;
+      --mono-font: "VT323", "Press Start 2P", "Courier New", monospace;
       --texture-opacity: 0;
-      --paper-line: rgba(115, 255, 153, 0.05);
-      --cursor: rgba(115, 255, 153, 0.9);
-      letter-spacing: 0.02em;
+      --paper-line: rgba(92, 255, 136, 0.04);
+      --cursor: rgba(92, 255, 136, 0.88);
+      --scroll-fade: linear-gradient(to bottom, transparent, var(--panel-strong) 48px, var(--panel-strong) calc(100% - 48px), transparent);
+      letter-spacing: 0.04em;
       -webkit-font-smoothing: none;
       font-smooth: never;
     }
 
-    * {
-      box-sizing: border-box;
-    }
-
-    html, body {
-      margin: 0;
-      min-height: 100%;
-    }
+    *, *::before, *::after { box-sizing: border-box; }
+    html, body { margin: 0; min-height: 100%; }
 
     body {
       font-family: var(--body-font);
+      font-size: 15px;
       color: var(--text);
       background:
-        radial-gradient(circle at top left, rgba(255, 255, 255, 0.45), transparent 36%),
-        radial-gradient(circle at 85% 12%, rgba(211, 180, 127, 0.28), transparent 25%),
-        linear-gradient(180deg, var(--bg), var(--bg-accent));
-      transition: background 240ms ease, color 240ms ease;
+        radial-gradient(ellipse 120% 80% at 15% 8%, rgba(255, 240, 210, 0.5), transparent 50%),
+        radial-gradient(ellipse 80% 60% at 88% 16%, rgba(211, 180, 127, 0.25), transparent 40%),
+        radial-gradient(ellipse 60% 100% at 50% 100%, rgba(180, 155, 110, 0.15), transparent 60%),
+        linear-gradient(178deg, var(--bg) 0%, var(--bg-accent) 100%);
+      transition: background 300ms ease, color 300ms ease;
       overflow: hidden;
+      touch-action: manipulation;
+      -webkit-text-size-adjust: 100%;
     }
 
     body::before {
@@ -85,10 +94,10 @@
       pointer-events: none;
       opacity: var(--texture-opacity);
       background:
-        linear-gradient(transparent 96%, var(--paper-line) 100%),
-        linear-gradient(90deg, rgba(122, 98, 66, 0.18), transparent 6%, transparent 94%, rgba(122, 98, 66, 0.1));
-      background-size: 100% 32px, 100% 100%;
+        repeating-linear-gradient(0deg, transparent, transparent 31px, var(--paper-line) 31px, var(--paper-line) 32px),
+        linear-gradient(90deg, rgba(122, 98, 66, 0.12), transparent 5%, transparent 95%, rgba(122, 98, 66, 0.08));
       mix-blend-mode: multiply;
+      z-index: 9999;
     }
 
     body[data-theme="crt"]::after {
@@ -96,109 +105,147 @@
       position: fixed;
       inset: 0;
       pointer-events: none;
+      z-index: 9998;
       background:
-        linear-gradient(rgba(255, 255, 255, 0.03), rgba(255, 255, 255, 0.01) 50%, rgba(0, 0, 0, 0.08) 51%, rgba(0, 0, 0, 0.15)),
-        repeating-linear-gradient(180deg, rgba(115, 255, 153, 0.03) 0 2px, transparent 2px 4px);
-      opacity: 0.75;
-      animation: flicker 7s infinite steps(9);
+        repeating-linear-gradient(180deg, rgba(92, 255, 136, 0.025) 0px, rgba(92, 255, 136, 0.025) 1px, transparent 1px, transparent 3px),
+        linear-gradient(rgba(255,255,255,0.02) 0%, rgba(0,0,0,0.06) 50%, rgba(0,0,0,0.12) 100%);
+      opacity: 0.7;
+      animation: scanFlicker 8s infinite steps(12);
     }
 
-    @keyframes flicker {
-      0%, 100% { opacity: 0.68; }
-      12% { opacity: 0.75; }
-      47% { opacity: 0.82; }
-      53% { opacity: 0.6; }
-      78% { opacity: 0.8; }
+    body[data-theme="crt"] .app::after {
+      content: "";
+      position: absolute;
+      inset: 0;
+      border-radius: inherit;
+      pointer-events: none;
+      box-shadow: inset 0 0 120px 40px rgba(0, 0, 0, 0.35);
+      z-index: 10;
+    }
+
+    @keyframes scanFlicker {
+      0%, 100% { opacity: 0.6; }
+      15% { opacity: 0.72; }
+      42% { opacity: 0.78; }
+      55% { opacity: 0.52; }
+      73% { opacity: 0.68; }
+      88% { opacity: 0.75; }
     }
 
     @keyframes rise {
-      from {
-        opacity: 0;
-        transform: translateY(10px);
-      }
-      to {
-        opacity: 1;
-        transform: translateY(0);
-      }
+      from { opacity: 0; transform: translateY(12px) scale(0.98); }
+      to { opacity: 1; transform: translateY(0) scale(1); }
     }
 
     @keyframes pulse {
-      0%, 100% { transform: scale(0.92); opacity: 0.55; }
+      0%, 100% { transform: scale(0.88); opacity: 0.5; }
       50% { transform: scale(1); opacity: 1; }
     }
 
-    @keyframes optionNudge {
-      0%, 100% { transform: translateX(0); }
-      18% { transform: translateX(-4px); }
-      36% { transform: translateX(4px); }
-      54% { transform: translateX(-3px); }
-      72% { transform: translateX(3px); }
+    @keyframes optionPulseRing {
+      0% { transform: scale(0.8); opacity: 0.6; }
+      50% { transform: scale(1.6); opacity: 0; }
+      100% { transform: scale(0.8); opacity: 0; }
     }
 
+    @keyframes optionFloat {
+      0%, 100% { transform: translateY(0); }
+      50% { transform: translateY(-3px); }
+    }
+
+    @keyframes optionSparkle {
+      0%, 100% { opacity: 0; transform: scale(0.5) rotate(0deg); }
+      20% { opacity: 1; transform: scale(1) rotate(30deg); }
+      80% { opacity: 0.6; transform: scale(0.8) rotate(150deg); }
+    }
+
+    @keyframes optionNudge {
+      0%, 100% { transform: translateX(0) rotate(0); }
+      20% { transform: translateX(-3px) rotate(-0.5deg); }
+      40% { transform: translateX(3px) rotate(0.5deg); }
+      60% { transform: translateX(-2px) rotate(-0.3deg); }
+      80% { transform: translateX(2px) rotate(0.3deg); }
+    }
+
+    @keyframes fadeSlideUp {
+      from { opacity: 0; transform: translateY(16px); }
+      to { opacity: 1; transform: translateY(0); }
+    }
+
+    @keyframes subtleBreathe {
+      0%, 100% { box-shadow: 0 0 0 0 var(--accent-glow); }
+      50% { box-shadow: 0 0 20px 4px var(--accent-glow); }
+    }
     .app-shell {
-      min-height: 100dvh;
-      display: grid;
-      place-items: center;
-      padding: 12px;
+      position: fixed;
+      inset: 0;
+      display: flex;
+      flex-direction: column;
     }
 
     .app {
       position: relative;
-      width: min(100%, 430px);
-      height: min(calc(100dvh - 24px), 860px);
-      display: grid;
-      grid-template-rows: 1fr auto;
-      gap: 12px;
-      padding: 16px 14px 14px;
-      border-radius: 34px;
-      border: 1px solid var(--line);
-      background: linear-gradient(180deg, color-mix(in srgb, var(--panel-strong) 96%, transparent), color-mix(in srgb, var(--panel) 88%, transparent));
-      box-shadow: var(--shadow), var(--glow);
-      backdrop-filter: blur(18px);
+      width: 100%;
+      height: 100%;
+      display: flex;
+      flex-direction: column;
+      background:
+        linear-gradient(180deg,
+          color-mix(in srgb, var(--panel-strong) 97%, transparent),
+          color-mix(in srgb, var(--panel) 90%, transparent));
       overflow: hidden;
     }
 
-    .app::before {
-      content: "";
-      position: absolute;
-      top: 10px;
-      left: 50%;
-      width: 112px;
-      height: 6px;
-      border-radius: 999px;
-      background: color-mix(in srgb, var(--text) 18%, transparent);
-      transform: translateX(-50%);
-      opacity: 0.45;
-      pointer-events: none;
-    }
-
-    .chat-panel,
-    .composer {
-      border: 1px solid var(--line);
-      background: color-mix(in srgb, var(--panel-strong) 95%, transparent);
-      backdrop-filter: blur(14px);
-    }
+    .app::before { display: none; }
 
     .settings-fab {
       position: absolute;
-      top: 16px;
-      right: 16px;
+      top: max(12px, env(safe-area-inset-top, 8px));
+      right: max(12px, env(safe-area-inset-right, 8px));
       z-index: 12;
-      width: 48px;
-      height: 48px;
+      width: 38px;
+      height: 38px;
       display: inline-grid;
       place-items: center;
-      border-radius: 16px;
+      border-radius: 999px;
       border: 1px solid var(--line);
-      background: color-mix(in srgb, var(--panel-strong) 90%, transparent);
-      box-shadow: 0 8px 30px rgba(0, 0, 0, 0.12), var(--glow);
+      background: color-mix(in srgb, var(--panel-strong) 88%, transparent);
+      box-shadow: 0 2px 12px rgba(0,0,0,0.08), var(--glow);
       backdrop-filter: blur(14px);
+      cursor: pointer;
+      transition: transform 300ms ease, box-shadow 300ms ease, border-color 300ms ease, background 300ms ease;
+      font: inherit;
+      color: var(--muted);
+      padding: 0;
+      -webkit-tap-highlight-color: transparent;
     }
 
-    .chip,
-    button,
-    input,
-    textarea {
+    .settings-fab svg {
+      width: 18px;
+      height: 18px;
+      transition: transform 400ms cubic-bezier(0.34, 1.56, 0.64, 1);
+    }
+
+    .settings-fab:hover {
+      transform: scale(1.08);
+      border-color: color-mix(in srgb, var(--accent) 30%, var(--line));
+      box-shadow: 0 8px 28px rgba(0,0,0,0.12), var(--glow);
+    }
+
+    .settings-fab:hover svg {
+      transform: rotate(60deg);
+    }
+
+    .settings-fab:active {
+      transform: scale(0.92);
+      background: color-mix(in srgb, var(--accent) 10%, var(--panel-strong));
+    }
+
+    .settings-fab:active svg {
+      transform: rotate(120deg);
+    }
+
+    .chip, button, input, textarea, select {
       font: inherit;
       color: inherit;
     }
@@ -207,22 +254,24 @@
       display: inline-flex;
       align-items: center;
       gap: 8px;
-      padding: 8px 12px;
+      padding: 7px 13px;
       border-radius: 999px;
       border: 1px solid var(--line);
-      background: color-mix(in srgb, var(--panel-strong) 88%, transparent);
-      box-shadow: inset 0 1px 0 rgba(255, 255, 255, 0.1);
-      font-size: 13px;
+      background: color-mix(in srgb, var(--panel-strong) 90%, transparent);
+      box-shadow: inset 0 1px 0 rgba(255,255,255,0.08);
+      font-size: 12px;
       line-height: 1;
       white-space: nowrap;
+      letter-spacing: 0.02em;
     }
 
     .chip-dot {
-      width: 8px;
-      height: 8px;
+      width: 7px;
+      height: 7px;
       border-radius: 999px;
       background: var(--accent);
-      box-shadow: 0 0 10px color-mix(in srgb, var(--accent) 65%, transparent);
+      box-shadow: 0 0 8px color-mix(in srgb, var(--accent) 60%, transparent);
+      flex-shrink: 0;
     }
 
     .chip.loading .chip-dot {
@@ -230,55 +279,66 @@
     }
 
     .theme-toggle {
-      display: inline-flex;
-      padding: 4px;
+      display: flex;
+      width: 100%;
+      padding: 3px;
       border-radius: 999px;
       border: 1px solid var(--line);
-      background: color-mix(in srgb, var(--panel-strong) 82%, transparent);
+      background: color-mix(in srgb, var(--panel-strong) 84%, transparent);
     }
 
     .theme-option {
+      flex: 1;
       border: 0;
       background: transparent;
       color: var(--muted);
-      padding: 8px 12px;
+      padding: 10px 14px;
       border-radius: 999px;
       cursor: pointer;
-      transition: background 180ms ease, color 180ms ease, transform 180ms ease;
+      font-size: 13px;
+      transition: background 200ms ease, color 200ms ease;
+      -webkit-tap-highlight-color: transparent;
     }
 
     .theme-option.active {
-      background: linear-gradient(180deg, color-mix(in srgb, var(--accent) 78%, white 18%), var(--accent-strong));
+      background: linear-gradient(180deg, color-mix(in srgb, var(--accent) 80%, white 15%), var(--accent-strong));
       color: var(--accent-text);
-      transform: translateY(-1px);
     }
 
     button {
       border: 1px solid var(--line);
-      border-radius: 16px;
-      background: color-mix(in srgb, var(--panel-strong) 90%, transparent);
-      padding: 10px 14px;
+      border-radius: 14px;
+      background: color-mix(in srgb, var(--panel-strong) 92%, transparent);
+      padding: 12px 16px;
       cursor: pointer;
-      transition: transform 160ms ease, border-color 160ms ease, background 160ms ease, opacity 160ms ease;
-      box-shadow: inset 0 1px 0 rgba(255, 255, 255, 0.12);
+      transition: transform 120ms ease, border-color 120ms ease, background 120ms ease, opacity 120ms ease;
+      font-size: 14px;
+      -webkit-tap-highlight-color: transparent;
     }
 
     button:hover:not(:disabled) {
-      transform: translateY(-1px);
-      border-color: color-mix(in srgb, var(--accent) 40%, var(--line));
+      border-color: color-mix(in srgb, var(--accent) 30%, var(--line));
+    }
+
+    button:active:not(:disabled) {
+      transform: scale(0.97);
     }
 
     button:disabled {
-      opacity: 0.55;
+      opacity: 0.45;
       cursor: not-allowed;
       transform: none;
     }
 
     .primary-btn {
-      background: linear-gradient(180deg, color-mix(in srgb, var(--accent) 76%, white 18%), var(--accent-strong));
+      background: linear-gradient(180deg, color-mix(in srgb, var(--accent) 80%, white 16%), var(--accent-strong));
       color: var(--accent-text);
-      border-color: color-mix(in srgb, var(--accent-strong) 72%, black 18%);
+      border-color: color-mix(in srgb, var(--accent-strong) 70%, black 20%);
       font-weight: 700;
+    }
+
+    .primary-btn:hover:not(:disabled) {
+      border-color: color-mix(in srgb, var(--accent-strong) 80%, black 20%);
     }
 
     .ghost-btn {
@@ -287,154 +347,219 @@
 
     .danger-btn {
       color: #ffd7d7;
-      border-color: rgba(190, 49, 49, 0.36);
-      background: rgba(141, 22, 22, 0.18);
+      border-color: rgba(190, 49, 49, 0.32);
+      background: rgba(141, 22, 22, 0.16);
     }
 
     .icon-btn {
-      width: 46px;
-      height: 46px;
+      width: 40px;
+      height: 40px;
       display: inline-grid;
       place-items: center;
-      border-radius: 14px;
+      border-radius: 999px;
       padding: 0;
       font-size: 18px;
+      -webkit-tap-highlight-color: transparent;
+    }
+    .chat-panel,
+    .composer {
+      background: transparent;
     }
 
     .chat-panel {
       position: relative;
       overflow: hidden;
-      border-radius: 26px;
+      flex: 1;
       min-height: 0;
+      border: none;
+    }
+
+    .chat-panel::before,
+    .chat-panel::after {
+      content: "";
+      position: absolute;
+      left: 0; right: 0;
+      height: 40px;
+      pointer-events: none;
+      z-index: 4;
+    }
+
+    .chat-panel::before {
+      top: 0;
+      background: linear-gradient(180deg, var(--bg) 0%, transparent 100%);
+    }
+
+    .chat-panel::after {
+      bottom: 0;
+      background: linear-gradient(0deg, var(--bg) 0%, transparent 100%);
     }
 
     #log {
       height: 100%;
       overflow: auto;
-      padding: 60px 22px 92px;
+      overscroll-behavior: contain;
+      -webkit-overflow-scrolling: touch;
+      padding: max(48px, env(safe-area-inset-top, 48px)) 16px 80px;
       display: flex;
       flex-direction: column;
-      gap: 14px;
+      gap: 10px;
       scroll-behavior: smooth;
+      scrollbar-width: none;
     }
+
+    #log::-webkit-scrollbar { display: none; }
 
     .empty-state {
       min-height: 100%;
       display: grid;
       place-items: center;
-      padding: 12px;
+      padding: 20px 16px;
     }
 
     .empty-card {
-      max-width: 560px;
-      padding: 28px;
-      border-radius: 24px;
-      border: 1px dashed var(--line);
-      background: color-mix(in srgb, var(--panel) 88%, transparent);
+      max-width: 100%;
+      padding: 32px 20px;
+      border-radius: 20px;
+      border: 1px dashed color-mix(in srgb, var(--line) 80%, transparent);
+      background: color-mix(in srgb, var(--panel) 90%, transparent);
       text-align: center;
-      box-shadow: inset 0 1px 0 rgba(255, 255, 255, 0.12);
+      animation: fadeSlideUp 500ms ease both;
     }
 
     .empty-card h2 {
-      margin: 0 0 10px;
-      font: 700 clamp(26px, 3.2vw, 38px)/1.08 var(--header-font);
+      margin: 0 0 12px;
+      font: 900 clamp(26px, 7vw, 40px)/1.15 var(--header-font);
+      background: linear-gradient(135deg, var(--text), var(--accent));
+      -webkit-background-clip: text;
+      -webkit-text-fill-color: transparent;
+      background-clip: text;
     }
 
     .empty-card p {
       margin: 0;
       color: var(--muted);
       line-height: 1.7;
+      font-size: 14px;
     }
 
     .empty-actions {
-      margin-top: 18px;
+      margin-top: 20px;
       display: flex;
       justify-content: center;
       gap: 10px;
       flex-wrap: wrap;
     }
 
+    .scroll-sentinel {
+      min-height: 1px;
+      width: 100%;
+      flex-shrink: 0;
+    }
+
+    .load-more-hint {
+      align-self: center;
+      color: var(--muted);
+      font-size: 11px;
+      opacity: 0.6;
+      padding: 4px 0 8px;
+      text-align: center;
+    }
+
     .turn-divider {
       align-self: center;
       display: inline-flex;
       align-items: center;
-      gap: 12px;
+      gap: 10px;
       color: var(--muted);
-      font: 700 11px/1 var(--mono-font);
-      letter-spacing: 0.08em;
-      margin: 6px 0 2px;
-      opacity: 0.9;
+      font: 600 10px/1 var(--mono-font);
+      letter-spacing: 0.12em;
+      text-transform: uppercase;
+      margin: 8px 0 4px;
+      opacity: 0.7;
     }
 
     .turn-divider::before,
     .turn-divider::after {
       content: "";
-      width: 44px;
+      width: 36px;
       height: 1px;
-      background: var(--line);
+      background: linear-gradient(90deg, transparent, var(--line), transparent);
       display: block;
     }
-
     .msg {
-      max-width: min(90%, 760px);
-      padding: 16px 18px;
-      border-radius: 22px;
-      border: 1px solid var(--line);
-      line-height: 1.78;
+      max-width: 92%;
+      padding: 12px 14px;
+      border-radius: 18px;
+      border: none;
+      line-height: 1.72;
       white-space: pre-wrap;
       word-break: break-word;
-      animation: rise 220ms ease;
-      box-shadow: inset 0 1px 0 rgba(255, 255, 255, 0.1);
+      animation: rise 250ms ease both;
       position: relative;
+      font-size: 15px;
     }
 
     .msg::before {
+      content: none;
+    }
+
+    .msg.speech::before {
       content: attr(data-role);
       display: block;
-      margin-bottom: 8px;
-      font: 700 12px/1 var(--mono-font);
+      margin-bottom: 5px;
+      font: 700 10px/1 var(--mono-font);
       letter-spacing: 0.1em;
       color: var(--muted);
       text-transform: uppercase;
+      opacity: 0.7;
     }
 
-    .msg.no-label::before {
+    .msg.speech.user::before {
+      color: var(--accent-text);
+      opacity: 0.6;
+    }
+
+    .msg.speech.no-label::before {
       display: none;
     }
 
     .msg.user {
       align-self: flex-end;
-      background: var(--user-bg);
-      border-bottom-right-radius: 8px;
+      background: var(--accent);
+      color: var(--accent-text);
+      border-bottom-right-radius: 6px;
     }
 
     .msg.assistant {
       background: var(--assistant-bg);
-      border-bottom-left-radius: 8px;
+      border-bottom-left-radius: 6px;
+      box-shadow: 0 1px 4px rgba(0,0,0,0.04);
     }
 
     .msg.speech {
-      max-width: min(76%, 320px);
-      padding: 14px 16px;
+      max-width: 82%;
+      padding: 11px 14px;
       line-height: 1.65;
     }
 
     .msg.speech::before {
       text-transform: none;
       letter-spacing: 0.04em;
+      font-size: 10px;
     }
 
     .msg.speech.user {
       align-self: flex-end;
-      border-bottom-right-radius: 8px;
+      border-bottom-right-radius: 6px;
+      background: var(--accent);
+      color: var(--accent-text);
     }
 
     .msg.speech.npc {
       align-self: flex-start;
-      background: var(--npc-bg, color-mix(in srgb, var(--assistant-bg) 90%, transparent));
-      border-color: var(--npc-line, var(--line));
+      background: var(--npc-bg, color-mix(in srgb, var(--assistant-bg) 92%, transparent));
       color: var(--npc-text, inherit);
-      border-bottom-left-radius: 8px;
+      border-bottom-left-radius: 6px;
     }
 
     .msg.speech.npc::before {
@@ -443,21 +568,25 @@
 
     .msg.system {
       max-width: 100%;
-      font-size: 13px;
+      font-size: 12px;
       color: var(--muted);
       background: var(--system-bg);
-      border-style: dashed;
+      border: 1px dashed var(--line);
+      border-radius: 12px;
+      padding: 10px 14px;
+      line-height: 1.6;
     }
 
     .msg.streaming::after {
       content: "";
       display: inline-block;
-      width: 9px;
-      height: 1.2em;
-      margin-left: 3px;
-      vertical-align: bottom;
+      width: 2px;
+      height: 1.15em;
+      margin-left: 2px;
+      vertical-align: text-bottom;
       background: var(--cursor);
-      animation: pulse 0.9s infinite;
+      animation: pulse 0.85s infinite;
+      border-radius: 1px;
     }
 
     .thinking-wrap {
@@ -465,113 +594,150 @@
       align-items: center;
       gap: 10px;
       color: var(--muted);
+      font-size: 13px;
     }
 
     .loader {
       display: inline-flex;
       align-items: center;
-      gap: 6px;
+      gap: 5px;
     }
 
     .loader span {
-      width: 7px;
-      height: 7px;
+      width: 6px;
+      height: 6px;
       border-radius: 999px;
       background: var(--accent);
-      opacity: 0.4;
+      opacity: 0.35;
       animation: pulse 0.95s infinite ease-in-out;
     }
 
-    .loader span:nth-child(2) { animation-delay: 0.12s; }
-    .loader span:nth-child(3) { animation-delay: 0.24s; }
-
+    .loader span:nth-child(2) { animation-delay: 0.13s; }
+    .loader span:nth-child(3) { animation-delay: 0.26s; }
     .option-overlay {
       position: absolute;
-      left: 12px;
-      right: 12px;
-      bottom: 12px;
+      left: 0;
+      right: 0;
+      bottom: 0;
       z-index: 7;
       display: none;
       pointer-events: none;
+      padding: 0 12px 12px;
     }
 
-    .option-overlay.visible {
-      display: block;
-    }
+    .option-overlay.visible { display: block; }
 
     .option-overlay::before {
       content: "";
       position: absolute;
-      left: -12px;
-      right: -12px;
-      bottom: -12px;
-      top: -420px;
-      background: linear-gradient(180deg, rgba(8, 8, 8, 0), rgba(8, 8, 8, 0.08) 38%, rgba(8, 8, 8, 0.2));
+      left: 0; right: 0;
+      bottom: 0; top: -300px;
+      background: linear-gradient(180deg, transparent 0%, rgba(0,0,0,0.06) 60%, rgba(0,0,0,0.18) 100%);
       opacity: 0;
-      transition: opacity 180ms ease;
+      transition: opacity 200ms ease;
       pointer-events: none;
     }
 
-    .option-overlay.open::before {
-      opacity: 1;
-    }
+    .option-overlay.open::before { opacity: 1; }
 
     .option-toggle {
       pointer-events: auto;
       position: absolute;
-      right: 0;
-      bottom: 0;
-      border-radius: 16px;
-      width: 44px;
+      right: 12px;
+      bottom: 12px;
+      border-radius: 999px;
+      width: auto;
       height: 44px;
-      padding: 0;
-      display: inline-grid;
-      place-items: center;
-      font-size: 18px;
+      padding: 0 18px 0 14px;
+      display: inline-flex;
+      align-items: center;
+      gap: 8px;
+      font-size: 13px;
+      font-weight: 700;
+      letter-spacing: 0.02em;
       line-height: 1;
-      box-shadow: 0 16px 36px rgba(0, 0, 0, 0.22), var(--glow);
+      box-shadow:
+        0 4px 20px rgba(0,0,0,0.16),
+        0 0 0 1px color-mix(in srgb, var(--accent) 20%, transparent);
       backdrop-filter: blur(16px);
+      overflow: visible;
+      animation: optionFloat 3s ease-in-out infinite;
+      transition: transform 200ms cubic-bezier(0.34, 1.56, 0.64, 1), box-shadow 200ms ease;
+      -webkit-tap-highlight-color: transparent;
+    }
+
+    .option-toggle::before {
+      content: "";
+      position: absolute;
+      inset: -4px;
+      border-radius: 999px;
+      border: 2px solid color-mix(in srgb, var(--accent) 16%, transparent);
+      opacity: 0;
+      transition: opacity 300ms ease;
+    }
+
+    .option-toggle:hover::before { opacity: 1; }
+
+    .option-toggle:active {
+      transform: scale(0.94);
     }
 
     .option-toggle.attention {
-      animation: optionNudge 1.15s ease-in-out infinite;
+      animation: optionFloat 2.5s ease-in-out infinite;
+    }
+
+    .option-toggle.attention::after {
+      content: "";
+      position: absolute;
+      inset: -3px;
+      border-radius: 999px;
+      border: 2px solid var(--accent);
+      animation: optionPulseRing 2s ease-out infinite;
+      pointer-events: none;
     }
 
     .option-toggle-icon {
-      display: inline-block;
-      transform: translateY(-1px);
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      width: 20px;
+      height: 20px;
+      border-radius: 999px;
+      background: color-mix(in srgb, var(--accent-text) 15%, transparent);
+      font-size: 11px;
+      line-height: 1;
+      transition: transform 300ms cubic-bezier(0.34, 1.56, 0.64, 1);
+    }
+
+    .option-toggle-label {
+      white-space: nowrap;
     }
 
     .option-panel {
       pointer-events: auto;
-      border: 1px solid var(--line);
-      border-radius: 24px;
-      background:
-        linear-gradient(180deg, color-mix(in srgb, var(--panel-strong) 98%, transparent), color-mix(in srgb, var(--panel) 92%, transparent));
+      border: none;
+      border-radius: 20px 20px 16px 16px;
+      background: var(--panel-strong);
       box-shadow:
-        0 22px 48px rgba(0, 0, 0, 0.24),
-        inset 0 1px 0 rgba(255, 255, 255, 0.12),
-        var(--glow);
-      backdrop-filter: blur(18px);
+        0 -4px 32px rgba(0,0,0,0.12),
+        0 0 0 1px var(--line);
       overflow: hidden;
-      max-height: min(46%, 320px);
+      max-height: min(55dvh, 400px);
       display: none;
-      transform: translateY(8px) scale(0.985);
-      transform-origin: bottom right;
+      transform: translateY(16px);
+      transform-origin: bottom center;
       opacity: 0;
-      transition: transform 180ms ease, opacity 180ms ease;
+      transition: transform 280ms cubic-bezier(0.34, 1.56, 0.64, 1), opacity 180ms ease;
     }
 
     .option-overlay.open .option-panel {
       display: grid;
       grid-template-rows: auto 1fr;
-      transform: translateY(0) scale(1);
+      transform: translateY(0);
       opacity: 1;
     }
 
-    .option-overlay.open .option-toggle {
-      display: none;
-    }
+    .option-overlay.open .option-toggle { display: none; }
 
     .option-head {
       display: flex;
@@ -580,144 +746,181 @@
       gap: 12px;
       padding: 14px 16px 12px;
       border-bottom: 1px solid var(--line);
-      background: linear-gradient(180deg, color-mix(in srgb, var(--accent) 12%, transparent), transparent);
+    }
+
+    .option-head::before {
+      content: "";
+      position: absolute;
+      top: 8px;
+      left: 50%;
+      transform: translateX(-50%);
+      width: 36px;
+      height: 4px;
+      border-radius: 999px;
+      background: color-mix(in srgb, var(--text) 15%, transparent);
     }
 
     .option-title {
       color: var(--muted);
       font-size: 12px;
-      letter-spacing: 0.08em;
+      font-weight: 700;
+      letter-spacing: 0.06em;
     }
 
     .option-subtitle {
-      margin-top: 4px;
+      margin-top: 2px;
       color: var(--muted);
       font-size: 11px;
       line-height: 1.4;
-      opacity: 0.82;
+      opacity: 0.6;
     }
 
-    .option-subtitle:empty {
-      display: none;
-    }
+    .option-subtitle:empty { display: none; }
 
-    .option-head-main {
-      min-width: 0;
-    }
+    .option-head-main { min-width: 0; }
 
     .option-collapse-icon {
       display: inline-block;
-      margin-right: 6px;
+      margin-right: 4px;
+      font-size: 11px;
+    }
+
+    .option-collapse-btn {
+      border-radius: 999px;
+      padding: 8px 14px;
       font-size: 12px;
-      transform: translateY(-1px);
     }
 
     .option-strip {
       display: grid;
-      gap: 12px;
-      padding: 14px;
+      gap: 8px;
+      padding: 12px 14px;
       overflow: auto;
+      overscroll-behavior: contain;
+      -webkit-overflow-scrolling: touch;
     }
 
     .option-chip {
       text-align: left;
-      padding: 14px 15px;
-      border-radius: 20px;
+      padding: 14px 16px;
+      border-radius: 14px;
       border: 1px solid var(--line);
-      background:
-        linear-gradient(180deg, color-mix(in srgb, var(--panel-strong) 96%, transparent), color-mix(in srgb, var(--panel) 88%, transparent));
-      line-height: 1.58;
-      box-shadow:
-        inset 0 1px 0 rgba(255, 255, 255, 0.1),
-        0 10px 18px rgba(0, 0, 0, 0.08);
-      transition: transform 160ms ease, border-color 160ms ease, background 160ms ease, box-shadow 160ms ease;
+      background: color-mix(in srgb, var(--panel) 94%, transparent);
+      line-height: 1.55;
+      font-size: 14px;
+      transition: transform 120ms ease, background 120ms ease;
+      -webkit-tap-highlight-color: transparent;
     }
 
     .option-chip strong {
       display: inline-block;
-      margin-right: 8px;
+      margin-right: 6px;
       color: var(--accent);
-      font: 700 12px/1 var(--mono-font);
-      letter-spacing: 0.08em;
+      font: 700 11px/1 var(--mono-font);
+      letter-spacing: 0.06em;
     }
 
-    .option-chip:hover:not(:disabled) {
-      transform: translateY(-1px);
-      border-color: color-mix(in srgb, var(--accent) 36%, var(--line));
-      background:
-        linear-gradient(180deg, color-mix(in srgb, var(--accent) 12%, var(--panel-strong)), color-mix(in srgb, var(--panel) 92%, transparent));
-      box-shadow:
-        inset 0 1px 0 rgba(255, 255, 255, 0.12),
-        0 14px 24px rgba(0, 0, 0, 0.12);
+    .option-chip:active:not(:disabled) {
+      transform: scale(0.97);
+      background: color-mix(in srgb, var(--accent) 8%, var(--panel));
     }
-
     .composer {
-      display: grid;
-      grid-template-columns: 1fr;
+      display: flex;
+      align-items: center;
       gap: 8px;
-      padding: 10px;
-      border-radius: 22px;
+      padding: 8px 12px max(8px, env(safe-area-inset-bottom, 8px));
+      border: none;
+      border-top: 1px solid var(--line);
+      background: color-mix(in srgb, var(--panel-strong) 95%, transparent);
+      backdrop-filter: blur(20px);
+      flex-shrink: 0;
     }
 
     .composer-field {
       position: relative;
+      flex: 1;
+      min-width: 0;
     }
 
-    textarea,
-    input {
+    textarea, input[type="text"], input[type="password"] {
       width: 100%;
       border: 1px solid var(--line);
       background: var(--input-bg);
-      border-radius: 18px;
+      border-radius: 14px;
       color: inherit;
       outline: none;
-      transition: border-color 160ms ease, box-shadow 160ms ease, background 160ms ease;
-      box-shadow: inset 0 1px 0 rgba(255, 255, 255, 0.12);
+      padding: 12px 14px;
+      font-size: 16px;
+      transition: border-color 200ms ease, box-shadow 200ms ease, background 200ms ease;
     }
 
-    textarea:focus,
-    input:focus {
-      border-color: color-mix(in srgb, var(--accent) 44%, var(--line));
-      box-shadow: 0 0 0 3px color-mix(in srgb, var(--accent) 18%, transparent);
+    textarea:focus, input[type="text"]:focus, input[type="password"]:focus {
+      border-color: color-mix(in srgb, var(--accent) 48%, var(--line));
+      box-shadow: 0 0 0 3px color-mix(in srgb, var(--accent) 12%, transparent);
     }
 
     #playerInput {
-      min-height: 58px;
-      max-height: 132px;
-      resize: vertical;
-      padding: 14px 52px 14px 16px;
-      line-height: 1.6;
+      height: 44px;
+      min-height: 44px;
+      max-height: 44px;
+      resize: none;
+      padding: 0 16px;
+      line-height: 44px;
+      font-size: 15px;
+      white-space: nowrap;
+      overflow: hidden;
+      border-radius: 999px;
+    }
+
+    #playerInput::placeholder {
+      color: var(--muted);
+      opacity: 0.45;
     }
 
     .composer-actions {
-      display: flex;
-      justify-content: flex-end;
+      display: none;
     }
 
     .send-fab {
-      position: absolute;
-      right: 12px;
-      bottom: 12px;
-      width: 32px;
-      height: 32px;
+      position: relative;
+      right: auto;
+      top: auto;
+      transform: none;
+      width: 44px;
+      height: 44px;
+      flex-shrink: 0;
+      padding: 0;
       border-radius: 999px;
       display: inline-grid;
       place-items: center;
-      padding: 0;
-      font-size: 14px;
+      font-size: 0;
       line-height: 1;
       z-index: 1;
+      transition: transform 120ms ease, box-shadow 120ms ease, opacity 120ms ease;
+      -webkit-tap-highlight-color: transparent;
     }
 
-    .mini-status {
-      min-height: 18px;
+    .send-fab svg {
+      width: 18px;
+      height: 18px;
+      flex-shrink: 0;
+    }
+
+    .send-fab:active:not(:disabled) {
+      transform: scale(0.88);
+    }
+
+    .status-bar {
+      flex-shrink: 0;
+      padding: 2px 16px max(4px, env(safe-area-inset-bottom, 4px));
       color: var(--muted);
-      font-size: 12px;
+      font-size: 10px;
       line-height: 1.4;
-      text-align: left;
-      padding: 0 4px;
+      text-align: center;
+      letter-spacing: 0.02em;
+      background: color-mix(in srgb, var(--panel-strong) 95%, transparent);
+      opacity: 0.7;
     }
-
     .range-row {
       display: grid;
       grid-template-columns: minmax(0, 1fr) auto;
@@ -726,7 +929,7 @@
     }
 
     .range-value {
-      min-width: 74px;
+      min-width: 68px;
       text-align: right;
       color: var(--muted);
       font-size: 12px;
@@ -744,49 +947,54 @@
       min-height: auto;
     }
 
-    input[type="range"]:focus {
-      box-shadow: none;
-    }
+    input[type="range"]:focus { box-shadow: none; }
 
-    .modal.hidden {
-      display: none;
-    }
+    .modal.hidden { display: none; }
 
     .modal {
       position: fixed;
       inset: 0;
       z-index: 20;
-      display: grid;
-      place-items: center;
-      padding: 16px;
+      display: flex;
+      flex-direction: column;
+      justify-content: flex-end;
     }
 
     .modal-backdrop {
       position: absolute;
       inset: 0;
-      background: rgba(12, 10, 7, 0.52);
-      backdrop-filter: blur(8px);
+      background: rgba(0, 0, 0, 0.4);
+      backdrop-filter: blur(6px);
     }
 
     .modal-card {
       position: relative;
-      width: min(760px, 100%);
-      max-height: min(90dvh, 920px);
+      width: 100%;
+      max-height: 92dvh;
       overflow: auto;
-      border-radius: 28px;
-      border: 1px solid var(--line);
+      border-radius: 24px 24px 0 0;
+      border: none;
+      border-top: 1px solid var(--line);
       background: var(--panel-strong);
-      box-shadow: var(--shadow), var(--glow);
+      box-shadow: 0 -8px 40px rgba(0,0,0,0.16);
+      animation: sheetSlideUp 300ms cubic-bezier(0.34, 1.56, 0.64, 1) both;
+      scrollbar-width: none;
+      overscroll-behavior: contain;
+      -webkit-overflow-scrolling: touch;
     }
 
-    .modal-head,
-    .modal-body,
-    .modal-foot {
-      padding: 18px 20px;
+    .modal-card::-webkit-scrollbar { display: none; }
+
+    @keyframes sheetSlideUp {
+      from { transform: translateY(100%); opacity: 0.5; }
+      to { transform: translateY(0); opacity: 1; }
     }
 
-    .modal-head,
-    .modal-foot {
+    .modal-head, .modal-body, .modal-foot {
+      padding: 16px 20px;
+    }
+
+    .modal-head, .modal-foot {
       display: flex;
       align-items: center;
       justify-content: space-between;
@@ -796,78 +1004,89 @@
     .modal-head {
       position: sticky;
       top: 0;
-      background: color-mix(in srgb, var(--panel-strong) 95%, transparent);
+      background: color-mix(in srgb, var(--panel-strong) 96%, transparent);
+      backdrop-filter: blur(10px);
       border-bottom: 1px solid var(--line);
       z-index: 1;
     }
 
+    .modal-head::before {
+      content: "";
+      position: absolute;
+      top: 8px;
+      left: 50%;
+      transform: translateX(-50%);
+      width: 36px;
+      height: 4px;
+      border-radius: 999px;
+      background: color-mix(in srgb, var(--text) 15%, transparent);
+    }
+
     .modal-head h3 {
       margin: 0;
-      font: 700 24px/1.1 var(--header-font);
+      font: 900 22px/1.1 var(--header-font);
     }
 
     .modal-subtitle {
-      margin: 6px 0 0;
+      margin: 3px 0 0;
       color: var(--muted);
-      font-size: 13px;
+      font-size: 12px;
     }
-
     .settings-grid {
       display: grid;
-      gap: 18px;
+      gap: 14px;
     }
 
     .section-card {
       border: 1px solid var(--line);
-      border-radius: 22px;
-      background: color-mix(in srgb, var(--panel) 90%, transparent);
-      padding: 16px;
+      border-radius: 16px;
+      background: color-mix(in srgb, var(--panel) 92%, transparent);
+      padding: 16px 14px;
+      transition: border-color 200ms ease;
+    }
+
+    .section-card:hover {
+      border-color: color-mix(in srgb, var(--accent) 20%, var(--line));
     }
 
     .section-card h4 {
-      margin: 0 0 6px;
-      font: 700 18px/1.2 var(--header-font);
+      margin: 0 0 3px;
+      font: 700 17px/1.25 var(--header-font);
     }
 
     .section-card p {
-      margin: 0 0 14px;
+      margin: 0 0 12px;
       color: var(--muted);
-      line-height: 1.55;
-      font-size: 13px;
+      line-height: 1.5;
+      font-size: 12px;
     }
 
-    .status-grid {
-      display: grid;
-      gap: 10px;
-    }
+    .status-grid { display: grid; gap: 10px; }
 
     .status-row {
       display: flex;
-      gap: 10px;
+      gap: 8px;
       flex-wrap: wrap;
       align-items: center;
     }
 
     .status-summary {
       color: var(--muted);
-      line-height: 1.6;
+      line-height: 1.65;
       font-size: 13px;
     }
 
-    .form-grid {
-      display: grid;
-      gap: 12px;
-    }
+    .form-grid { display: grid; gap: 12px; }
 
     .two-col {
       display: grid;
       gap: 12px;
-      grid-template-columns: repeat(2, minmax(0, 1fr));
+      grid-template-columns: 1fr;
     }
 
     label {
       display: grid;
-      gap: 7px;
+      gap: 6px;
       font-size: 14px;
     }
 
@@ -875,10 +1094,11 @@
       color: var(--muted);
       font-size: 12px;
       letter-spacing: 0.03em;
+      font-weight: 600;
     }
 
     .setting-textarea {
-      min-height: 126px;
+      min-height: 120px;
       padding: 14px 16px;
       resize: vertical;
       line-height: 1.65;
@@ -886,102 +1106,77 @@
 
     .action-grid {
       display: grid;
-      grid-template-columns: repeat(2, minmax(0, 1fr));
-      gap: 10px;
+      grid-template-columns: 1fr;
+      gap: 8px;
     }
 
     .modal-foot {
       position: sticky;
       bottom: 0;
-      background: color-mix(in srgb, var(--panel-strong) 95%, transparent);
+      background: color-mix(in srgb, var(--panel-strong) 96%, transparent);
+      backdrop-filter: blur(10px);
       border-top: 1px solid var(--line);
+      padding-bottom: max(16px, env(safe-area-inset-bottom, 16px));
     }
 
     .security-note {
       color: var(--muted);
-      font-size: 12px;
+      font-size: 11px;
       line-height: 1.55;
+      opacity: 0.8;
     }
 
-    @media (max-width: 880px) {
+    /* Desktop upscale — only kicks in on wide screens */
+    @media (min-width: 600px) {
       .app-shell {
-        padding: 0;
+        display: grid;
+        place-items: center;
+        padding: 16px;
       }
-
       .app {
-        width: 100vw;
-        height: 100dvh;
-        max-height: none;
-        border-radius: 0;
-        padding-top: 18px;
+        width: min(100%, 420px);
+        height: min(calc(100dvh - 32px), 860px);
+        border-radius: var(--radius-xl);
+        border: 1px solid var(--line);
+        box-shadow: var(--shadow), var(--glow);
       }
-
-      .chat-panel {
-        min-height: 0;
-        border-radius: 0;
-        border-left: 0;
-        border-right: 0;
+      .chat-panel { border-radius: var(--radius-lg) var(--radius-lg) 0 0; }
+      .chat-panel::before {
+        background: linear-gradient(180deg, color-mix(in srgb, var(--panel-strong) 98%, transparent) 0%, transparent 100%);
       }
-
+      .chat-panel::after {
+        background: linear-gradient(0deg, color-mix(in srgb, var(--panel-strong) 98%, transparent) 0%, transparent 100%);
+      }
+      #log { padding: 56px 20px 80px; }
       .composer {
-        gap: 8px;
+        border-radius: 0 0 var(--radius-xl) var(--radius-xl);
+        background: color-mix(in srgb, var(--panel-strong) 96%, transparent);
       }
-
-      .composer-actions {
-        justify-content: flex-start;
+      .modal { justify-content: center; align-items: center; }
+      .modal-card {
+        width: min(640px, 94%);
+        max-height: min(88dvh, 860px);
+        border-radius: var(--radius-xl);
+        border: 1px solid var(--line);
+        animation: rise 280ms ease both;
       }
-    }
-
-    @media (max-width: 640px) {
-      .composer,
-      .modal-head,
-      .modal-body,
-      .modal-foot {
-        padding-left: 14px;
-        padding-right: 14px;
-      }
-
-      .settings-fab {
-        top: 12px;
-        right: 12px;
-        width: 44px;
-        height: 44px;
-        border-radius: 14px;
-      }
-
-      .two-col,
-      .action-grid {
-        grid-template-columns: 1fr;
-      }
-
-      .theme-toggle {
-        width: 100%;
-        justify-content: space-between;
-      }
-
-      .theme-option {
-        flex: 1;
-      }
-
-      .msg {
-        max-width: 100%;
-      }
-
-      #log {
-        padding: 58px 14px 92px;
-      }
+      .modal-head::before { display: none; }
+      .option-panel { border-radius: var(--radius-lg); }
+      .msg { font-size: 14px; }
     }
   </style>
 </head>
 <body data-theme="paper">
   <div class="app-shell">
-    <button id="settingsBtn" class="settings-fab" type="button" aria-label="打开设置">设</button>
+    <button id="settingsBtn" class="settings-fab" type="button" aria-label="打开设置">
+      <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="3"/><path d="M19.4 15a1.65 1.65 0 0 0 .33 1.82l.06.06a2 2 0 0 1-2.83 2.83l-.06-.06a1.65 1.65 0 0 0-1.82-.33 1.65 1.65 0 0 0-1 1.51V21a2 2 0 0 1-4 0v-.09A1.65 1.65 0 0 0 9 19.4a1.65 1.65 0 0 0-1.82.33l-.06.06a2 2 0 0 1-2.83-2.83l.06-.06A1.65 1.65 0 0 0 4.68 15a1.65 1.65 0 0 0-1.51-1H3a2 2 0 0 1 0-4h.09A1.65 1.65 0 0 0 4.6 9a1.65 1.65 0 0 0-.33-1.82l-.06-.06a2 2 0 0 1 2.83-2.83l.06.06A1.65 1.65 0 0 0 9 4.68a1.65 1.65 0 0 0 1-1.51V3a2 2 0 0 1 4 0v.09a1.65 1.65 0 0 0 1 1.51 1.65 1.65 0 0 0 1.82-.33l.06-.06a2 2 0 0 1 2.83 2.83l-.06.06A1.65 1.65 0 0 0 19.4 9a1.65 1.65 0 0 0 1.51 1H21a2 2 0 0 1 0 4h-.09a1.65 1.65 0 0 0-1.51 1z"/></svg>
+    </button>
     <div class="app">
       <main class="chat-panel">
         <div id="log" aria-live="polite"></div>
         <div id="optionOverlay" class="option-overlay" aria-label="可选行动浮层">
           <button id="optionToggleBtn" class="option-toggle primary-btn" type="button" aria-label="展开选项">
-            <span class="option-toggle-icon">▴</span>
+            <span class="option-toggle-icon">▴</span><span class="option-toggle-label">选项</span>
           </button>
           <section class="option-panel">
             <div class="option-head">
@@ -989,7 +1184,7 @@
                 <div class="option-title">可选行动</div>
                 <div class="option-subtitle">点按即可立刻发送，也可以继续自由输入。</div>
               </div>
-              <button id="optionCollapseBtn" class="ghost-btn" type="button" aria-label="收起选项">
+              <button id="optionCollapseBtn" class="ghost-btn option-collapse-btn" type="button" aria-label="收起选项">
                 <span class="option-collapse-icon">▾</span>收起
               </button>
             </div>
@@ -1000,13 +1195,11 @@
 
       <section class="composer">
         <div class="composer-field">
-          <button id="sendBtn" class="send-fab primary-btn" type="button" aria-label="发送">↑</button>
-          <textarea id="playerInput" placeholder=""></textarea>
+          <textarea id="playerInput" placeholder="输入你的行动..."></textarea>
         </div>
-        <div class="composer-actions">
-          <div id="status" class="mini-status">就绪</div>
-        </div>
+        <button id="sendBtn" class="send-fab primary-btn" type="button" aria-label="发送"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><line x1="22" y1="2" x2="11" y2="13"/><polygon points="22 2 15 22 11 13 2 9 22 2"/></svg></button>
       </section>
+      <div id="status" class="status-bar">就绪</div>
     </div>
   </div>
 
@@ -1033,7 +1226,7 @@
                 </div>
                 <div id="modelChip" class="chip">模型未校验</div>
               </div>
-              <div id="storySummary" class="status-summary">在设置里填写 API Key 和模型，然后点击“开始新冒险”。</div>
+              <div id="storySummary" class="status-summary">在设置里填写 API Key 和模型，然后点击"开始新冒险"。</div>
               <div class="action-grid">
                 <button id="startBtn" class="primary-btn" type="button">开始新冒险</button>
                 <button id="retryBtn" class="ghost-btn" type="button">重试上一轮</button>
@@ -1095,7 +1288,7 @@
                 <button id="clearBtn" class="danger-btn" type="button">清空记录</button>
               </div>
               <div class="security-note">
-                纯前端页面会把 API Key 和存档写入当前浏览器的 `localStorage`。若要更安全，应该改成你自己的后端代理。
+                纯前端页面会把 API Key 和存档写入当前浏览器的 localStorage。若要更安全，应该改成你自己的后端代理。
               </div>
             </div>
           </section>
@@ -1107,13 +1300,15 @@
       </div>
     </section>
   </div>
-
   <script>
     const STORAGE_KEY = "siliconflow_text_adventure_v2";
     const DEFAULT_API_BASE = "https://api.siliconflow.cn/v1/chat/completions";
     const DEFAULT_MODEL = "Qwen/Qwen2.5-7B-Instruct";
     const DEFAULT_TEXT_SPEED = 28;
     const MAX_WORLDBUILD_ROUNDS = 10;
+    const CONTEXT_WINDOW_SIZE = 10;
+    const DOM_NODE_CAP = 60;
+    const DOM_RENDER_TAIL = 40;
     const SETUP_TOPIC_LABELS = {
       story_type: "故事类型",
       world_concept: "世界概念",
@@ -1173,32 +1368,23 @@
       currentTurnTimestamp: null,
       setupState: null,
       worldbook: null,
-      validation: {
-        ok: false,
-        checkedAt: "",
-        detail: "模型未校验"
-      },
-      optionPanelOpen: false
+      validation: { ok: false, checkedAt: "", detail: "模型未校验" },
+      optionPanelOpen: false,
+      contextSummary: "",
+      lastSummarizedIndex: 0
     };
 
     function escapeHtml(text) {
-      return text
-        .replaceAll("&", "&amp;")
-        .replaceAll("<", "&lt;")
-        .replaceAll(">", "&gt;")
-        .replaceAll('"', "&quot;");
+      return text.replaceAll("&","&amp;").replaceAll("<","&lt;").replaceAll(">","&gt;").replaceAll('"',"&quot;");
     }
-
     function setStatus(text, isError = false) {
       els.status.textContent = text;
       els.status.style.color = isError ? "#f07d7d" : "";
     }
-
     function updateGameStateChip(text, loading = false) {
       els.gameStateChip.classList.toggle("loading", loading);
       els.gameStateChip.innerHTML = `<span class="chip-dot"></span><span>${escapeHtml(text)}</span>`;
     }
-
     function updateModelStatus() {
       const label = state.validation.ok
         ? `模型已校验${state.validation.checkedAt ? " · " + state.validation.checkedAt : ""}`
@@ -1206,22 +1392,16 @@
       els.modelChip.textContent = label;
       els.validateStatus.textContent = label;
     }
-
-    function getAssistantLabel(stage = state.sessionStage) {
-      return "造世者";
-    }
-
+    function getAssistantLabel(stage = state.sessionStage) { return "造世者"; }
     function getSessionLabel() {
       if (!state.started || state.sessionStage === "idle") return "未开始";
       if (state.sessionStage === "setup") return "创建世界中";
       if (state.sessionStage === "bootstrap") return "编织世界中";
       return "进行中";
     }
-
     function getSetupRoundCount() {
       return state.messages.filter(msg => msg.stage === "setup" && msg.role === "user" && !msg.hidden).length;
     }
-
     function updateSummary() {
       if (!state.started) {
         els.storySummary.textContent = "在设置里填写 API Key 和模型，然后开始新冒险。世界、人设与主线都将在开局对话中共同创建。";
@@ -1238,7 +1418,7 @@
       if (state.sessionStage === "bootstrap") {
         const storyType = state.setupState?.answers?.storyType || "未命名类型";
         const worldTitle = state.worldbook?.worldTitle || "未命名世界";
-        els.storySummary.textContent = `造世者正在根据“${storyType}”的设定编织 ${worldTitle} 的规则、角色档案与主线节点。`;
+        els.storySummary.textContent = `造世者正在根据"${storyType}"的设定编织 ${worldTitle} 的规则、角色档案与主线节点。`;
         return;
       }
       const title = state.worldbook?.worldTitle || "未命名世界";
@@ -1246,13 +1426,11 @@
       const playerName = state.worldbook?.playerState?.name || "玩家";
       els.storySummary.textContent = `${playerName} 正在 ${title} 中冒险。当前主线节点：${currentNode || "序章"}`;
     }
-
     function updateThemeButtons() {
       const isPaper = state.theme === "paper";
       els.themePaperSettingsBtn.classList.toggle("active", isPaper);
       els.themeCrtSettingsBtn.classList.toggle("active", !isPaper);
     }
-
     function applyTheme(theme, persist = true) {
       state.theme = theme === "crt" ? "crt" : "paper";
       els.body.setAttribute("data-theme", state.theme);
@@ -1260,37 +1438,26 @@
       redrawLogFromState();
       if (persist) saveState(true);
     }
-
     function updateTextSpeedLabel() {
       const value = Number.parseInt(els.textSpeed.value, 10) || DEFAULT_TEXT_SPEED;
       els.textSpeedValue.textContent = `${value} 字/秒`;
     }
-
     function setBusy(flag, phase = "idle") {
       state.busy = flag;
       state.phase = phase;
-      const disabled = flag;
-      els.sendBtn.disabled = disabled;
-      els.startBtn.disabled = disabled;
-      els.retryBtn.disabled = disabled;
-      els.validateBtn.disabled = disabled;
-      if (!flag) {
-        updateGameStateChip(getSessionLabel());
-        return;
-      }
+      els.sendBtn.disabled = flag;
+      els.startBtn.disabled = flag;
+      els.retryBtn.disabled = flag;
+      els.validateBtn.disabled = flag;
+      if (!flag) { updateGameStateChip(getSessionLabel()); return; }
       if (phase === "thinking") {
-        if (state.sessionStage === "setup") {
-          updateGameStateChip("世界设定问答中", true);
-        } else if (state.sessionStage === "bootstrap") {
-          updateGameStateChip("造世者编织世界中", true);
-        } else {
-          updateGameStateChip("模型思考中", true);
-        }
+        if (state.sessionStage === "setup") updateGameStateChip("世界设定问答中", true);
+        else if (state.sessionStage === "bootstrap") updateGameStateChip("造世者编织世界中", true);
+        else updateGameStateChip("模型思考中", true);
       } else if (phase === "streaming") {
         updateGameStateChip("剧情输出中", true);
       }
     }
-
     function getConfig() {
       return {
         apiKey: els.apiKey.value.trim(),
@@ -1299,91 +1466,34 @@
         textSpeed: Number.parseInt(els.textSpeed.value, 10) || DEFAULT_TEXT_SPEED
       };
     }
-
     function createInitialSetupState() {
       return {
-        status: "questioning",
-        currentQuestionKey: "story_type",
-        nextQuestionKey: "world_concept",
-        completedTopics: [],
-        askedTopics: [],
-        answers: {
-          storyType: "",
-          worldConcept: "",
-          worldTone: "",
-          coreConflict: "",
-          playerName: "",
-          playerIdentity: "",
-          playerTrait: "",
-          playerHook: ""
-        }
+        status: "questioning", currentQuestionKey: "story_type", nextQuestionKey: "world_concept",
+        completedTopics: [], askedTopics: [],
+        answers: { storyType:"", worldConcept:"", worldTone:"", coreConflict:"", playerName:"", playerIdentity:"", playerTrait:"", playerHook:"" }
       };
     }
-
     function normalizeSetupState(raw) {
       const base = createInitialSetupState();
       const next = raw && typeof raw === "object" ? raw : {};
       const answers = next.answers && typeof next.answers === "object" ? next.answers : {};
-
       return {
-        ...base,
-        ...next,
+        ...base, ...next,
         completedTopics: Array.isArray(next.completedTopics) ? next.completedTopics : base.completedTopics,
         askedTopics: Array.isArray(next.askedTopics) ? next.askedTopics : base.askedTopics,
-        answers: {
-          ...base.answers,
-          ...answers
-        }
+        answers: { ...base.answers, ...answers }
       };
     }
-
     function createInitialWorldbook(cfg) {
       return {
-        status: "draft",
-        worldTitle: "",
-        coreConcept: "",
-        rules: [],
-        gmAgent: {
-          identity: "造世者",
-          responsibilities: ["维护世界规则", "维护主线节点", "维护角色一致性"],
-          trackedCharacters: [],
-          trackedPlotNodes: [],
-          currentFocus: "",
-          sceneIntent: "",
-          notes: []
-        },
-        mainPlot: {
-          opening: "",
-          ending: "",
-          currentNodeId: "node-1",
-          nodes: []
-        },
-        npcs: [],
-        playerState: {
-          name: "",
-          identity: "",
-          status: {
-            physical: "正常",
-            mental: "稳定",
-            location: ""
-          },
-          personality: [],
-          relationships: {},
-          emotion: "",
-          inventory: [],
-          clues: [],
-          flags: [],
-          notes: []
-        },
-        worldState: {
-          time: "",
-          threatLevel: "",
-          globalFlags: [],
-          impactLog: []
-        }
+        status:"draft", worldTitle:"", coreConcept:"", rules:[],
+        gmAgent:{ identity:"造世者", responsibilities:["维护世界规则","维护主线节点","维护角色一致性"], trackedCharacters:[], trackedPlotNodes:[], currentFocus:"", sceneIntent:"", notes:[] },
+        mainPlot:{ opening:"", ending:"", currentNodeId:"node-1", nodes:[] },
+        npcs:[],
+        playerState:{ name:"", identity:"", status:{ physical:"正常", mental:"稳定", location:"" }, personality:[], relationships:{}, emotion:"", inventory:[], clues:[], flags:[], notes:[] },
+        worldState:{ time:"", threatLevel:"", globalFlags:[], impactLog:[] }
       };
     }
-
     function normalizeWorldbook(raw, cfg = getConfig()) {
       const base = createInitialWorldbook(cfg);
       const next = raw && typeof raw === "object" ? raw : {};
@@ -1392,47 +1502,28 @@
       const playerState = next.playerState && typeof next.playerState === "object" ? next.playerState : {};
       const worldState = next.worldState && typeof next.worldState === "object" ? next.worldState : {};
       const playerStatus = playerState.status && typeof playerState.status === "object" ? playerState.status : {};
-
       return {
-        ...base,
-        ...next,
+        ...base, ...next,
         rules: Array.isArray(next.rules) ? next.rules : base.rules,
-        gmAgent: {
-          ...base.gmAgent,
-          ...gmAgent,
+        gmAgent: { ...base.gmAgent, ...gmAgent,
           responsibilities: Array.isArray(gmAgent.responsibilities) ? gmAgent.responsibilities : base.gmAgent.responsibilities,
           trackedCharacters: Array.isArray(gmAgent.trackedCharacters) ? gmAgent.trackedCharacters : base.gmAgent.trackedCharacters,
           trackedPlotNodes: Array.isArray(gmAgent.trackedPlotNodes) ? gmAgent.trackedPlotNodes : base.gmAgent.trackedPlotNodes,
-          notes: Array.isArray(gmAgent.notes) ? gmAgent.notes : base.gmAgent.notes
-        },
-        mainPlot: {
-          ...base.mainPlot,
-          ...mainPlot,
-          nodes: Array.isArray(mainPlot.nodes) ? mainPlot.nodes : base.mainPlot.nodes
-        },
+          notes: Array.isArray(gmAgent.notes) ? gmAgent.notes : base.gmAgent.notes },
+        mainPlot: { ...base.mainPlot, ...mainPlot,
+          nodes: Array.isArray(mainPlot.nodes) ? mainPlot.nodes : base.mainPlot.nodes },
         npcs: Array.isArray(next.npcs) ? next.npcs : base.npcs,
-        playerState: {
-          ...base.playerState,
-          ...playerState,
-          status: {
-            ...base.playerState.status,
-            ...playerStatus
-          },
+        playerState: { ...base.playerState, ...playerState,
+          status: { ...base.playerState.status, ...playerStatus },
           personality: Array.isArray(playerState.personality) ? playerState.personality : base.playerState.personality,
-          relationships: playerState.relationships && typeof playerState.relationships === "object"
-            ? playerState.relationships
-            : base.playerState.relationships,
+          relationships: playerState.relationships && typeof playerState.relationships === "object" ? playerState.relationships : base.playerState.relationships,
           inventory: Array.isArray(playerState.inventory) ? playerState.inventory : base.playerState.inventory,
           clues: Array.isArray(playerState.clues) ? playerState.clues : base.playerState.clues,
           flags: Array.isArray(playerState.flags) ? playerState.flags : base.playerState.flags,
-          notes: Array.isArray(playerState.notes) ? playerState.notes : base.playerState.notes
-        },
-        worldState: {
-          ...base.worldState,
-          ...worldState,
+          notes: Array.isArray(playerState.notes) ? playerState.notes : base.playerState.notes },
+        worldState: { ...base.worldState, ...worldState,
           globalFlags: Array.isArray(worldState.globalFlags) ? worldState.globalFlags : base.worldState.globalFlags,
-          impactLog: Array.isArray(worldState.impactLog) ? worldState.impactLog : base.worldState.impactLog
-        }
+          impactLog: Array.isArray(worldState.impactLog) ? worldState.impactLog : base.worldState.impactLog }
       };
     }
 
@@ -1441,8 +1532,7 @@
       const roundsLeft = Math.max(0, MAX_WORLDBUILD_ROUNDS - roundsUsed);
       const setupState = normalizeSetupState(state.setupState);
       return [
-        "你是造世者，现在处于世界观创建阶段。",
-        "",
+        "你是造世者，现在处于世界观创建阶段。","",
         "你的职责：",
         "- 只和玩家共同确定两类内容：世界观，和玩家自身角色。",
         "- 关键 NPC、剧情走向、主线节点、结局方向，全部由你在后续后台自行构建，不允许向玩家征求意见。",
@@ -1451,100 +1541,64 @@
         "- 每一轮只能问 1 个问题，不能同时问两个独立问题。",
         "- 非收束轮必须给出 2-3 个编号选项，同时允许玩家自由输入。",
         `- 最多只能进行 ${MAX_WORLDBUILD_ROUNDS} 轮问答。当前已用 ${roundsUsed} 轮，剩余 ${roundsLeft} 轮。`,
-        "- 如果当前信息已经足够，或者只剩最后一轮，你必须收束设定，不再继续提问。",
-        "",
+        "- 如果当前信息已经足够，或者只剩最后一轮，你必须收束设定，不再继续提问。","",
         "你的回复要求：",
         "- 可见正文只能使用结构化标签：<narration>...</narration> 与 <dialogue><speaker>...</speaker><content>...</content></dialogue>。",
         "- <content> 里只能放人物真正说出口的台词，不能夹带动作、神态、心理、场景描写。",
         "- 人物动作和神态必须单独写进相邻的 <narration>，例如：<narration>技术员皱了一下眉，随即恢复平静。</narration><dialogue><speaker>技术员</speaker><content>明白了。我们会进行标准现场勘查。</content></dialogue>。",
         "- 当 status=questioning 时，可见正文可以是 1-2 句简短引导 + 2-3 个编号选项。",
-        "- 当 status=ready 时，可见正文只能是 1-2 句简短总结，不再继续提问，也不再给编号选项。",
-        "",
-        "你必须在每次回复末尾附带：",
-        "<setup_state>{合法 JSON}</setup_state>",
-        "",
-        "setup_state JSON 必须包含这些字段：",
-        "{",
-        '  "status": "questioning 或 ready",',
-        '  "currentQuestionKey": "story_type 等主题 key",',
-        '  "nextQuestionKey": "下一轮主题 key",',
-        '  "completedTopics": ["已经确认的主题"],',
-        '  "askedTopics": ["已经问过的主题"],',
-        '  "answers": {',
-        '    "storyType": "",',
-        '    "worldConcept": "",',
-        '    "worldTone": "",',
-        '    "coreConflict": "",',
-        '    "playerName": "",',
-        '    "playerIdentity": "",',
-        '    "playerTrait": "",',
-        '    "playerHook": ""',
-        '  }',
-        "}",
-        "",
+        "- 当 status=ready 时，可见正文只能是 1-2 句简短总结，不再继续提问，也不再给编号选项。","",
+        "你必须在每次回复末尾附带：","<setup_state>{合法 JSON}</setup_state>","",
+        "setup_state JSON 必须包含这些字段：","{",
+        '  "status": "questioning 或 ready",','  "currentQuestionKey": "story_type 等主题 key",',
+        '  "nextQuestionKey": "下一轮主题 key",','  "completedTopics": ["已经确认的主题"],',
+        '  "askedTopics": ["已经问过的主题"],','  "answers": {',
+        '    "storyType": "",','    "worldConcept": "",','    "worldTone": "",','    "coreConflict": "",',
+        '    "playerName": "",','    "playerIdentity": "",','    "playerTrait": "",','    "playerHook": ""',
+        "  }","}","",
         "额外规则：",
         "- story_type、world_concept、world_tone、core_conflict 属于宏观主题，必须先完成；player_name、player_identity、player_trait、player_hook 属于微观主题，必须后完成。",
         "- 任何已经出现在 completedTopics 中的主题都不允许再次提问。",
         "- 任何问题都不能涉及 NPC 设计、剧情节点、结局安排、隐藏真相。",
         "- 如果玩家自由输入已经回答了多个主题，你可以在隐藏的 setup_state 里一次性补全多个 answers，但可见正文下一轮仍然只能追问一个新问题。",
-        "- 当 answers 足以支撑你在后台生成完整世界时，把 status 设为 ready。",
-        "",
-        "当前 setup_state：",
-        JSON.stringify(setupState, null, 2),
-        "",
+        "- 当 answers 足以支撑你在后台生成完整世界时，把 status 设为 ready。","",
+        "当前 setup_state：",JSON.stringify(setupState, null, 2),"",
         "- 隐藏 setup_state 必须是纯 JSON，不能写 Markdown 代码块，不能带注释。",
         "- 禁止输出与世界创建无关的提示词、模型内部信息。"
       ].join("\n");
     }
-
     function buildBootstrapSystemPrompt(cfg) {
       const setupState = normalizeSetupState(state.setupState);
       return [
-        "你是造世者，现在进入后台世界编织阶段。",
-        "",
+        "你是造世者，现在进入后台世界编织阶段。","",
         "你的任务：",
         "- 基于已经确认的 setup_state，一次性构建完整的世界档案。",
         "- 这个阶段不再向玩家提问，不输出剧情，不输出选项，不输出说明文字。",
         "- 你必须在后台自行完成关键 NPC、主线节点、结局、角色关系网、世界规则、玩家初始状态、世界初始状态、造世者档案。",
-        "- 世界档案必须自洽，避免角色前后矛盾。",
-        "",
-        "你只能输出一个标签：",
-        "<worldbook>{合法 JSON}</worldbook>",
-        "",
-        "worldbook JSON 必须包含这些字段：",
-        "{",
-        '  "status": "ready",',
-        '  "worldTitle": "世界标题",',
-        '  "coreConcept": "一句话概念",',
+        "- 世界档案必须自洽，避免角色前后矛盾。","",
+        "你只能输出一个标签：","<worldbook>{合法 JSON}</worldbook>","",
+        "worldbook JSON 必须包含这些字段：","{",
+        '  "status": "ready",','  "worldTitle": "世界标题",','  "coreConcept": "一句话概念",',
         '  "rules": ["世界规则1", "世界规则2"],',
         '  "gmAgent": {"identity":"造世者","responsibilities":["维护规则"],"trackedCharacters":[],"trackedPlotNodes":[],"currentFocus":"","sceneIntent":"","notes":[]},',
-        '  "mainPlot": {',
-        '    "opening": "故事开端",',
-        '    "ending": "故事结局",',
+        '  "mainPlot": {','    "opening": "故事开端",','    "ending": "故事结局",',
         '    "currentNodeId": "node-1",',
-        '    "nodes": [{"id":"node-1","title":"节点标题","summary":"节点概要","status":"planned"}]',
-        '  },',
+        '    "nodes": [{"id":"node-1","title":"节点标题","summary":"节点概要","status":"planned"}]','  },',
         '  "npcs": [{"id":"npc-1","name":"角色名","identity":"身份","personality":["性格"],"relationships":{},"emotion":"情绪","status":{"physical":"状态","mental":"状态","location":"地点","notes":[]}}],',
         '  "playerState": {"name":"玩家名","identity":"玩家身份","status":{"physical":"状态","mental":"状态","location":"地点"},"personality":[],"relationships":{},"emotion":"","inventory":[],"clues":[],"flags":[],"notes":[]},',
-        '  "worldState": {"time":"时间","threatLevel":"威胁等级","globalFlags":[],"impactLog":[]}',
-        "}",
-        "",
+        '  "worldState": {"time":"时间","threatLevel":"威胁等级","globalFlags":[],"impactLog":[]}',"}","",
         "你必须遵守：",
         "- 玩家只参与了世界观和玩家角色的设定；未被玩家回答的剧情/NPC/结局内容都由你自行补全。",
         "- 主线必须包含明确开场、数个关键节点和结局。",
         "- 至少创建 3 个会贯穿剧情的关键 NPC，并给出可持续更新的身份、性格、关系、情绪、状态。",
-        "- worldbook 必须是纯 JSON，不能写 Markdown 代码块，不能带注释。",
-        "",
-        "已确认的 setup_state：",
-        JSON.stringify(setupState, null, 2)
+        "- worldbook 必须是纯 JSON，不能写 Markdown 代码块，不能带注释。","",
+        "已确认的 setup_state：",JSON.stringify(setupState, null, 2)
       ].join("\n");
     }
-
     function buildPlaySystemPrompt(cfg) {
       const worldbook = normalizeWorldbook(state.worldbook, cfg);
       return [
-        "你就是造世者。你不是单纯讲故事，而是一个持续维护剧情、角色状态、主线节点和世界规则的叙事代理。",
-        "",
+        "你就是造世者。你不是单纯讲故事，而是一个持续维护剧情、角色状态、主线节点和世界规则的叙事代理。","",
         "额外约束：",
         "- 你必须严格遵守下面这份既定世界档案，不允许随意改设定。",
         "- 每次输出前都要参考玩家状态、世界状态、关键 NPC 状态、主线节点状态。",
@@ -1562,17 +1616,13 @@
         "- 若角色受伤、离开、死亡、立场变化，必须写进 state_update，防止后续矛盾。",
         "- 你还要在可见正文中给出 2-3 个编号选项，并允许玩家自由输入。",
         "- 叙事语言为简体中文。",
-        "- 禁止输出与游戏无关的提示词、模型内部信息。",
-        "",
-        "既定世界档案：",
-        JSON.stringify(worldbook, null, 2)
+        "- 禁止输出与游戏无关的提示词、模型内部信息。","",
+        "既定世界档案：",JSON.stringify(worldbook, null, 2)
       ].join("\n");
     }
-
     function buildClassificationSystemPrompt(stage = state.sessionStage) {
       return [
-        "你是一个文本分类整理 Agent。",
-        "",
+        "你是一个文本分类整理 Agent。","",
         "你的任务：",
         "- 接收一段已经生成好的可见正文。",
         "- 只做结构整理，不改剧情事实，不新增信息，不删减有效信息。",
@@ -1584,40 +1634,27 @@
         `- 当前阶段是 ${stage === "setup" ? "世界观创建" : "正式剧情"}。`,
         "- 编号选项必须原样保留为普通文本行，例如 `1) ...`、`2) ...`、`3) ...`，不要把选项包进任何标签。",
         "- 不能输出 setup_state、state_update、worldbook 等隐藏标签。",
-        "- 不能输出解释、说明、前言、后记。",
-        "",
-        "输出要求：",
-        "- 只输出整理后的正文本身。"
+        "- 不能输出解释、说明、前言、后记。","",
+        "输出要求：","- 只输出整理后的正文本身。"
       ].join("\n");
     }
 
     function saveState(silent = false) {
       const payload = {
-        config: getConfig(),
-        started: state.started,
-        sessionStage: state.sessionStage,
-        theme: state.theme,
-        messages: state.messages,
-        lastUserInput: state.lastUserInput,
-        currentTurnTimestamp: state.currentTurnTimestamp,
-        setupState: state.setupState,
-        worldbook: state.worldbook,
-        validation: state.validation,
-        optionPanelOpen: state.optionPanelOpen
+        config: getConfig(), started: state.started, sessionStage: state.sessionStage,
+        theme: state.theme, messages: state.messages, lastUserInput: state.lastUserInput,
+        currentTurnTimestamp: state.currentTurnTimestamp, setupState: state.setupState,
+        worldbook: state.worldbook, validation: state.validation, optionPanelOpen: state.optionPanelOpen,
+        contextSummary: state.contextSummary, lastSummarizedIndex: state.lastSummarizedIndex
       };
       localStorage.setItem(STORAGE_KEY, JSON.stringify(payload));
       if (!silent) setStatus("已保存到本地");
     }
-
     function loadState() {
       const raw = localStorage.getItem(STORAGE_KEY);
       if (!raw) {
-        applyTheme("paper", false);
-        redrawLogFromState();
-        updateSummary();
-        updateModelStatus();
-        setStatus("未找到存档");
-        return;
+        applyTheme("paper", false); redrawLogFromState(); updateSummary(); updateModelStatus();
+        setStatus("未找到存档"); return;
       }
       try {
         const parsed = JSON.parse(raw);
@@ -1628,11 +1665,9 @@
           els.textSpeed.value = String(parsed.config.textSpeed || DEFAULT_TEXT_SPEED);
         }
         state.started = Boolean(parsed.started);
-        state.sessionStage = parsed.sessionStage === "worldbuild"
-          ? "setup"
-          : parsed.sessionStage === "adventure"
-            ? "play"
-            : parsed.sessionStage || (parsed.started ? "play" : "idle");
+        state.sessionStage = parsed.sessionStage === "worldbuild" ? "setup"
+          : parsed.sessionStage === "adventure" ? "play"
+          : parsed.sessionStage || (parsed.started ? "play" : "idle");
         state.setupState = normalizeSetupState(parsed.setupState);
         state.worldbook = parsed.worldbook ? normalizeWorldbook(parsed.worldbook) : null;
         state.messages = normalizeMessages(Array.isArray(parsed.messages) ? parsed.messages : []);
@@ -1640,50 +1675,34 @@
         state.currentTurnTimestamp = parsed.currentTurnTimestamp || null;
         state.validation = parsed.validation || state.validation;
         state.optionPanelOpen = Boolean(parsed.optionPanelOpen);
+        state.contextSummary = parsed.contextSummary || "";
+        state.lastSummarizedIndex = parsed.lastSummarizedIndex || 0;
         applyTheme(parsed.theme || "paper", false);
-        updateTextSpeedLabel();
-        redrawLogFromState();
-        updateSummary();
-        updateModelStatus();
-        updateGameStateChip(getSessionLabel());
+        updateTextSpeedLabel(); redrawLogFromState(); updateSummary();
+        updateModelStatus(); updateGameStateChip(getSessionLabel());
         setStatus("已读取本地存档");
       } catch (err) {
-        applyTheme("paper", false);
-        els.textSpeed.value = String(DEFAULT_TEXT_SPEED);
-        updateTextSpeedLabel();
-        state.sessionStage = "idle";
-        state.setupState = null;
-        state.worldbook = null;
-        redrawLogFromState();
-        updateSummary();
-        updateModelStatus();
+        applyTheme("paper", false); els.textSpeed.value = String(DEFAULT_TEXT_SPEED);
+        updateTextSpeedLabel(); state.sessionStage = "idle";
+        state.setupState = null; state.worldbook = null;
+        redrawLogFromState(); updateSummary(); updateModelStatus();
         setStatus("存档解析失败：" + err.message, true);
       }
     }
-
     function openSettings() {
       els.settingsModal.classList.remove("hidden");
       els.settingsModal.setAttribute("aria-hidden", "false");
     }
-
     function closeSettings() {
       els.settingsModal.classList.add("hidden");
       els.settingsModal.setAttribute("aria-hidden", "true");
       saveState(true);
     }
-
-    function clearLog() {
-      els.log.innerHTML = "";
-    }
-
+    function clearLog() { els.log.innerHTML = ""; }
     function formatTurnTime(ts) {
       if (!ts) return "";
-      return new Date(ts).toLocaleTimeString([], {
-        hour: "2-digit",
-        minute: "2-digit"
-      });
+      return new Date(ts).toLocaleTimeString([], { hour: "2-digit", minute: "2-digit" });
     }
-
     function createTurnDivider(turnTimestamp) {
       const div = document.createElement("div");
       div.className = "turn-divider";
@@ -1692,7 +1711,6 @@
       els.log.appendChild(div);
       return div;
     }
-
     function ensureTurnDivider(turnTimestamp) {
       if (!turnTimestamp) return;
       const key = String(turnTimestamp);
@@ -1700,184 +1718,110 @@
       createTurnDivider(turnTimestamp);
       els.log.scrollTop = els.log.scrollHeight;
     }
-
     function normalizeMessages(messages) {
       let lastTurnTimestamp = null;
       return messages.map((msg, index) => {
         const next = { ...msg };
         if (next.stage === "worldbuild") next.stage = "setup";
         if (next.stage === "adventure") next.stage = "play";
-        if (!next.stage) {
-          next.stage = state.sessionStage === "setup" ? "setup" : "play";
-        }
-        if (next.role === "assistant" && !next.assistantLabel) {
-          next.assistantLabel = getAssistantLabel(next.stage);
-        }
-        if (next.turnTimestamp) {
-          lastTurnTimestamp = next.turnTimestamp;
-          return next;
-        }
-        if (next.role === "user") {
-          lastTurnTimestamp = Date.now() + index;
-          next.turnTimestamp = lastTurnTimestamp;
-          return next;
-        }
-        if (lastTurnTimestamp) {
-          next.turnTimestamp = lastTurnTimestamp;
-          return next;
-        }
-        next.turnTimestamp = Date.now() + index;
-        lastTurnTimestamp = next.turnTimestamp;
-        return next;
+        if (!next.stage) next.stage = state.sessionStage === "setup" ? "setup" : "play";
+        if (next.role === "assistant" && !next.assistantLabel) next.assistantLabel = getAssistantLabel(next.stage);
+        if (next.turnTimestamp) { lastTurnTimestamp = next.turnTimestamp; return next; }
+        if (next.role === "user") { lastTurnTimestamp = Date.now() + index; next.turnTimestamp = lastTurnTimestamp; return next; }
+        if (lastTurnTimestamp) { next.turnTimestamp = lastTurnTimestamp; return next; }
+        next.turnTimestamp = Date.now() + index; lastTurnTimestamp = next.turnTimestamp; return next;
       });
     }
-
     function setOptionPanelOpen(flag) {
       state.optionPanelOpen = Boolean(flag);
       updateOptionControls();
       saveState(true);
     }
-
     function updateOptionControls(hasOptions = els.optionOverlay.classList.contains("visible")) {
       els.optionOverlay.classList.toggle("open", hasOptions && state.optionPanelOpen);
       els.optionToggleBtn.classList.toggle("attention", hasOptions && !state.optionPanelOpen);
       els.optionToggleBtn.setAttribute("aria-label", state.optionPanelOpen ? "收起选项" : "展开选项");
-      els.optionToggleBtn.innerHTML = `<span class="option-toggle-icon">${state.optionPanelOpen ? "▾" : "▴"}</span>`;
+      els.optionToggleBtn.innerHTML = `<span class="option-toggle-icon">${state.optionPanelOpen ? "▾" : "▴"}</span><span class="option-toggle-label">选项</span>`;
       els.optionCollapseBtn.innerHTML = `<span class="option-collapse-icon">▾</span>收起`;
     }
-
     function hideOptionStrip() {
       state.optionPanelOpen = false;
       els.optionStrip.innerHTML = "";
       els.optionOverlay.classList.remove("visible", "open");
       updateOptionControls(false);
     }
-
     function extractTagPayload(text, tagName) {
       const match = text.match(new RegExp(`<${tagName}>([\\s\\S]*?)<\\/${tagName}>`, "i"));
       return match ? match[1].trim() : "";
     }
-
     function stripHiddenPayloadTags(text) {
-      return text
-        .replace(/<setup_state>[\s\S]*?<\/setup_state>/gi, "")
-        .replace(/<worldbook>[\s\S]*?<\/worldbook>/gi, "")
-        .replace(/<state_update>[\s\S]*?<\/state_update>/gi, "")
-        .trim();
+      return text.replace(/<setup_state>[\s\S]*?<\/setup_state>/gi,"").replace(/<worldbook>[\s\S]*?<\/worldbook>/gi,"").replace(/<state_update>[\s\S]*?<\/state_update>/gi,"").trim();
     }
-
     function safeParseJson(text) {
       if (!text) return null;
-      try {
-        return JSON.parse(text);
-      } catch (_) {
-        return null;
-      }
+      try { return JSON.parse(text); } catch(_) { return null; }
     }
-
     function applySetupStateFromText(text) {
       const payload = extractTagPayload(text, "setup_state");
       const parsed = safeParseJson(payload);
       if (!parsed) return false;
       state.setupState = normalizeSetupState(parsed);
-      updateSummary();
-      return true;
+      updateSummary(); return true;
     }
-
     function applyWorldbookDraftFromText(text) {
       const payload = extractTagPayload(text, "worldbook");
-      const fallback = text
-        .replace(/```(?:json|xml|html|text)?/gi, "")
-        .replace(/```/g, "")
-        .trim();
+      const fallback = text.replace(/```(?:json|xml|html|text)?/gi,"").replace(/```/g,"").trim();
       const parsed = safeParseJson(payload) || safeParseJson(fallback);
       if (!parsed) return false;
       state.worldbook = normalizeWorldbook(parsed);
-      updateSummary();
-      return true;
+      updateSummary(); return true;
     }
-
     function mergeNpcUpdate(existing, update) {
       const baseStatus = existing?.status && typeof existing.status === "object" ? existing.status : {};
       const nextStatus = update?.status && typeof update.status === "object" ? update.status : {};
       return {
-        ...(existing || {}),
-        ...(update || {}),
+        ...(existing||{}), ...(update||{}),
         identity: update?.identity ?? existing?.identity ?? "",
         emotion: update?.emotion ?? existing?.emotion ?? "",
         personality: Array.isArray(update?.personality) ? update.personality : Array.isArray(existing?.personality) ? existing.personality : [],
-        relationships: update?.relationships && typeof update.relationships === "object"
-          ? update.relationships
-          : existing?.relationships && typeof existing.relationships === "object"
-            ? existing.relationships
-            : {},
-        status: {
-          ...baseStatus,
-          ...nextStatus,
-          notes: Array.isArray(nextStatus.notes) ? nextStatus.notes : Array.isArray(baseStatus.notes) ? baseStatus.notes : []
-        }
+        relationships: update?.relationships && typeof update.relationships === "object" ? update.relationships : existing?.relationships && typeof existing.relationships === "object" ? existing.relationships : {},
+        status: { ...baseStatus, ...nextStatus, notes: Array.isArray(nextStatus.notes) ? nextStatus.notes : Array.isArray(baseStatus.notes) ? baseStatus.notes : [] }
       };
     }
-
     function applyStateUpdateFromText(text) {
       const payload = extractTagPayload(text, "state_update");
       const parsed = safeParseJson(payload);
       if (!parsed || !state.worldbook) return false;
-
       const worldbook = normalizeWorldbook(state.worldbook);
-
       if (parsed.playerState && typeof parsed.playerState === "object") {
         const nextStatus = parsed.playerState.status && typeof parsed.playerState.status === "object" ? parsed.playerState.status : {};
-        worldbook.playerState = {
-          ...worldbook.playerState,
-          ...parsed.playerState,
-          status: {
-            ...worldbook.playerState.status,
-            ...nextStatus
-          },
+        worldbook.playerState = { ...worldbook.playerState, ...parsed.playerState,
+          status: { ...worldbook.playerState.status, ...nextStatus },
           personality: Array.isArray(parsed.playerState.personality) ? parsed.playerState.personality : worldbook.playerState.personality,
-          relationships: parsed.playerState.relationships && typeof parsed.playerState.relationships === "object"
-            ? parsed.playerState.relationships
-            : worldbook.playerState.relationships,
+          relationships: parsed.playerState.relationships && typeof parsed.playerState.relationships === "object" ? parsed.playerState.relationships : worldbook.playerState.relationships,
           inventory: Array.isArray(parsed.playerState.inventory) ? parsed.playerState.inventory : worldbook.playerState.inventory,
           clues: Array.isArray(parsed.playerState.clues) ? parsed.playerState.clues : worldbook.playerState.clues,
           flags: Array.isArray(parsed.playerState.flags) ? parsed.playerState.flags : worldbook.playerState.flags,
-          notes: Array.isArray(parsed.playerState.notes) ? parsed.playerState.notes : worldbook.playerState.notes
-        };
+          notes: Array.isArray(parsed.playerState.notes) ? parsed.playerState.notes : worldbook.playerState.notes };
       }
-
       if (parsed.worldState && typeof parsed.worldState === "object") {
-        worldbook.worldState = {
-          ...worldbook.worldState,
-          ...parsed.worldState,
+        worldbook.worldState = { ...worldbook.worldState, ...parsed.worldState,
           globalFlags: Array.isArray(parsed.worldState.globalFlags) ? parsed.worldState.globalFlags : worldbook.worldState.globalFlags,
-          impactLog: Array.isArray(parsed.worldState.impactLog) ? parsed.worldState.impactLog : worldbook.worldState.impactLog
-        };
+          impactLog: Array.isArray(parsed.worldState.impactLog) ? parsed.worldState.impactLog : worldbook.worldState.impactLog };
       }
-
       if (Array.isArray(parsed.npcUpdates) && parsed.npcUpdates.length) {
         const nextNpcs = [...worldbook.npcs];
         for (const update of parsed.npcUpdates) {
           if (!update || typeof update !== "object") continue;
           const index = nextNpcs.findIndex(npc => (update.id && npc.id === update.id) || (update.name && npc.name === update.name));
-          if (index >= 0) {
-            nextNpcs[index] = mergeNpcUpdate(nextNpcs[index], update);
-          } else {
-            nextNpcs.push(mergeNpcUpdate(null, update));
-          }
+          if (index >= 0) nextNpcs[index] = mergeNpcUpdate(nextNpcs[index], update);
+          else nextNpcs.push(mergeNpcUpdate(null, update));
         }
         worldbook.npcs = nextNpcs;
       }
-
       if (parsed.plot && typeof parsed.plot === "object") {
-        worldbook.mainPlot = {
-          ...worldbook.mainPlot,
-          ...parsed.plot,
-          nodes: [...worldbook.mainPlot.nodes]
-        };
-        if (parsed.plot.currentNodeId) {
-          worldbook.mainPlot.currentNodeId = parsed.plot.currentNodeId;
-        }
+        worldbook.mainPlot = { ...worldbook.mainPlot, ...parsed.plot, nodes: [...worldbook.mainPlot.nodes] };
+        if (parsed.plot.currentNodeId) worldbook.mainPlot.currentNodeId = parsed.plot.currentNodeId;
         if (Array.isArray(parsed.plot.nodeStatusUpdates)) {
           worldbook.mainPlot.nodes = worldbook.mainPlot.nodes.map(node => {
             const update = parsed.plot.nodeStatusUpdates.find(item => item && item.id === node.id);
@@ -1885,405 +1829,264 @@
           });
         }
       }
-
       if (parsed.agentState && typeof parsed.agentState === "object") {
-        worldbook.gmAgent = {
-          ...worldbook.gmAgent,
-          ...parsed.agentState,
+        worldbook.gmAgent = { ...worldbook.gmAgent, ...parsed.agentState,
           responsibilities: Array.isArray(parsed.agentState.responsibilities) ? parsed.agentState.responsibilities : worldbook.gmAgent.responsibilities,
           trackedCharacters: Array.isArray(parsed.agentState.trackedCharacters) ? parsed.agentState.trackedCharacters : worldbook.gmAgent.trackedCharacters,
           trackedPlotNodes: Array.isArray(parsed.agentState.trackedPlotNodes) ? parsed.agentState.trackedPlotNodes : worldbook.gmAgent.trackedPlotNodes,
-          notes: Array.isArray(parsed.agentState.notes) ? parsed.agentState.notes : worldbook.gmAgent.notes
-        };
+          notes: Array.isArray(parsed.agentState.notes) ? parsed.agentState.notes : worldbook.gmAgent.notes };
       }
-
       if (Array.isArray(parsed.canonNotes) && parsed.canonNotes.length) {
         worldbook.worldState.impactLog = [...worldbook.worldState.impactLog, ...parsed.canonNotes];
       }
-
       state.worldbook = normalizeWorldbook(worldbook);
-      updateSummary();
-      return true;
+      updateSummary(); return true;
+    }
+
+    async function summarizePrunedMessages(messagesToSummarize) {
+      const existing = state.contextSummary ? `已有回顾：\n${state.contextSummary}\n\n新增内容：\n` : "";
+      const transcript = messagesToSummarize.map(msg => {
+        const role = msg.role === "assistant" ? "造世者" : "玩家";
+        return `[${role}] ${stripHiddenPayloadTags(msg.content).slice(0, 300)}`;
+      }).join("\n");
+      try {
+        const result = await requestChatOnce([
+          { role: "system", content: "你是一个剧情压缩 Agent。将以下对话历史压缩为一段简洁的剧情回顾（300字以内）。\n保留：关键剧情转折、玩家做出的重要选择、角色状态变化、获得的线索和物品。\n丢弃：重复描写、选项列表、过渡性旁白。\n只输出压缩后的回顾文本，不要附带标签或说明。" },
+          { role: "user", content: existing + transcript }
+        ], { temperature: 0.3, maxTokens: 500 });
+        if (result.text) {
+          state.contextSummary = result.text.trim();
+          saveState(true);
+        }
+      } catch (_) { /* summarization failure is non-fatal */ }
     }
 
     function buildRequestMessages(stage = state.sessionStage) {
       const cfg = getConfig();
       const normalizedStage = stage === "setup" ? "setup" : "play";
       const systemPrompt = normalizedStage === "setup" ? buildSetupSystemPrompt(cfg) : buildPlaySystemPrompt(cfg);
-      const messages = state.messages
-        .filter(msg => msg.stage === normalizedStage && msg.role !== "system")
-        .map(msg => ({ role: msg.role, content: msg.content }));
-
-      return [{ role: "system", content: systemPrompt }, ...messages];
+      const allMessages = state.messages.filter(msg => msg.stage === normalizedStage && msg.role !== "system").map(msg => ({ role: msg.role, content: msg.content }));
+      const maxMessages = CONTEXT_WINDOW_SIZE * 2;
+      if (normalizedStage === "play" && allMessages.length > maxMessages) {
+        const windowed = allMessages.slice(-maxMessages);
+        const summaryBlock = state.contextSummary ? `\n\n[剧情回顾]\n${state.contextSummary}` : "";
+        return [{ role: "system", content: systemPrompt + summaryBlock }, ...windowed];
+      }
+      return [{ role: "system", content: systemPrompt }, ...allMessages];
     }
-
     function buildBootstrapMessages() {
-      const transcript = state.messages
-        .filter(msg => msg.stage === "setup" && !msg.hidden && msg.role !== "system")
-        .map(msg => ({ role: msg.role, content: stripHiddenPayloadTags(msg.content) }));
+      const transcript = state.messages.filter(msg => msg.stage === "setup" && !msg.hidden && msg.role !== "system").map(msg => ({ role: msg.role, content: stripHiddenPayloadTags(msg.content) }));
       return [
-        { role: "system", content: buildBootstrapSystemPrompt(getConfig()) },
-        ...transcript,
-        {
-          role: "user",
-          content: "现在开始后台编织世界。不要输出说明，不要输出剧情，不要输出选项。只输出 <worldbook>{...}</worldbook>，并确保它是完整可解析的 JSON。"
-        }
+        { role: "system", content: buildBootstrapSystemPrompt(getConfig()) }, ...transcript,
+        { role: "user", content: "现在开始后台编织世界。不要输出说明，不要输出剧情，不要输出选项。只输出 <worldbook>{...}</worldbook>，并确保它是完整可解析的 JSON。" }
       ];
     }
-
     function stripStructuredTags(text) {
       return text
-        .replace(/<setup_state>[\s\S]*?<\/setup_state>/gi, "")
-        .replace(/<worldbook>[\s\S]*?<\/worldbook>/gi, "")
-        .replace(/<state_update>[\s\S]*?<\/state_update>/gi, "")
-        .replace(/<dialogue>\s*<speaker>\s*([\s\S]*?)\s*<\/speaker>\s*<content>\s*([\s\S]*?)\s*<\/content>\s*<\/dialogue>/gi, (_, _speaker, speech) => speech.trim())
-        .replace(/<speaker>\s*([\s\S]*?)\s*<\/speaker>\s*<content>\s*([\s\S]*?)\s*<\/content>/gi, (_, _speaker, speech) => speech.trim())
+        .replace(/<setup_state>[\s\S]*?<\/setup_state>/gi,"").replace(/<worldbook>[\s\S]*?<\/worldbook>/gi,"")
+        .replace(/<state_update>[\s\S]*?<\/state_update>/gi,"")
+        .replace(/<dialogue>\s*<speaker>\s*([\s\S]*?)\s*<\/speaker>\s*<content>\s*([\s\S]*?)\s*<\/content>\s*<\/dialogue>/gi, (_, _s, speech) => speech.trim())
+        .replace(/<speaker>\s*([\s\S]*?)\s*<\/speaker>\s*<content>\s*([\s\S]*?)\s*<\/content>/gi, (_, _s, speech) => speech.trim())
         .replace(/<speech(?:\s+speaker=(?:"[^"]+"|'[^']+'))?\s*>([\s\S]*?)<\/speech>/gi, (_, speech) => speech.trim())
-        .replace(/<narration>\s*([\s\S]*?)\s*<\/narration>/gi, (_, narration) => narration.trim())
-        .replace(/<\/?(?:dialogue|speaker|content|speech|narration)(?:\s+[^>]*)?>/gi, "")
-        .replace(/\s+/g, " ")
-        .trim();
+        .replace(/<narration>\s*([\s\S]*?)\s*<\/narration>/gi, (_, n) => n.trim())
+        .replace(/<\/?(?:dialogue|speaker|content|speech|narration)(?:\s+[^>]*)?>/gi,"")
+        .replace(/\s+/g," ").trim();
     }
-
     function parseOptionChunks(line) {
       const text = stripStructuredTags(line);
       const matches = [];
-      const regex = /(\d{1,2})[\.\)、\)]\s*([\s\S]*?)(?=(?:\s+\d{1,2}[\.\)、\)])|$)/g;
+      const regex = /(\d{1,2})[\.\\)、\)]\s*([\s\S]*?)(?=(?:\s+\d{1,2}[\.\\)、\)])|$)/g;
       let match;
-
       while ((match = regex.exec(text)) !== null) {
         const index = match[1];
-        const label = match[2].trim().replace(/[；;，,。！!？?]+$/g, "").trim();
+        const label = match[2].trim().replace(/[；;，,。！!？?]+$/g,"").trim();
         if (!label) continue;
         matches.push({ index, label });
       }
-
       return matches;
     }
-
     function stripOptionChunksFromLine(line) {
       const clean = stripStructuredTags(line);
       const options = parseOptionChunks(line);
       if (!options.length) return clean.trim();
-      const firstOptionMatch = clean.match(/\d{1,2}[\.\)、\)]/);
+      const firstOptionMatch = clean.match(/\d{1,2}[\.\\)、\)]/);
       if (!firstOptionMatch) return clean.trim();
-      return clean.slice(0, firstOptionMatch.index).replace(/[：:\s]+$/g, "").trim();
+      return clean.slice(0, firstOptionMatch.index).replace(/[：:\s]+$/g,"").trim();
     }
-
     function extractOptionsFromText(text) {
-      const lines = text.split("\n").map(line => line.trim()).filter(Boolean);
-      const options = [];
-      const seen = new Set();
-
+      const lines = text.split("\n").map(l=>l.trim()).filter(Boolean);
+      const options = []; const seen = new Set();
       for (const line of lines) {
         for (const option of parseOptionChunks(line)) {
           if (seen.has(option.label)) continue;
-          seen.add(option.label);
-          options.push(option);
+          seen.add(option.label); options.push(option);
         }
       }
-
       return options.slice(0, 3);
     }
-
     function extractOptionLeadText(text) {
-      const lines = stripHiddenPayloadTags(text).split("\n").map(line => line.trim()).filter(Boolean);
+      const lines = stripHiddenPayloadTags(text).split("\n").map(l=>l.trim()).filter(Boolean);
       let lead = "";
-
       for (const line of lines) {
-        if (parseOptionChunks(line).length) {
-          const prefix = stripOptionChunksFromLine(line);
-          if (prefix) lead = prefix;
-          break;
-        }
+        if (parseOptionChunks(line).length) { const prefix = stripOptionChunksFromLine(line); if (prefix) lead = prefix; break; }
         if (/^(可选行动|选项)[:：]?$/.test(line)) continue;
         if (/^(请输入(?:你的)?选择|请选择|请输入选择|你可以输入选项编号|你可以选择|请选择你的行动)[:：]?$/.test(line)) continue;
         const clean = stripStructuredTags(line);
         if (clean) lead = clean;
       }
-
       return lead;
     }
-
     function stripOptionsFromAssistantText(text) {
-      const lines = text.split("\n");
-      const filtered = [];
+      const lines = text.split("\n"); const filtered = [];
       const leadText = extractOptionLeadText(text);
       const hasOptions = extractOptionsFromText(text).length > 0;
       let leadRemoved = false;
-
       for (const rawLine of lines) {
-        const line = rawLine.trim();
-        const clean = stripStructuredTags(rawLine);
-        if (!line) {
-          filtered.push("");
-          continue;
-        }
+        const line = rawLine.trim(); const clean = stripStructuredTags(rawLine);
+        if (!line) { filtered.push(""); continue; }
         if (/^(可选行动|选项)[:：]?$/.test(line)) continue;
         if (/^(请输入(?:你的)?选择|请选择|请输入选择|你可以输入选项编号|你可以选择|请选择你的行动)[:：]?$/.test(line)) continue;
-        if (parseOptionChunks(rawLine).length) {
-          continue;
-        }
+        if (parseOptionChunks(rawLine).length) continue;
         if (!clean) continue;
-        if (hasOptions && leadText && !leadRemoved && clean === leadText) {
-          leadRemoved = true;
-          continue;
-        }
+        if (hasOptions && leadText && !leadRemoved && clean === leadText) { leadRemoved = true; continue; }
         filtered.push(clean);
       }
-
-      const normalized = filtered
-        .join("\n")
-        .replace(/\n{3,}/g, "\n\n")
-        .trim();
-
+      const normalized = filtered.join("\n").replace(/\n{3,}/g,"\n\n").trim();
       return normalized || text.trim();
     }
-
     function isPlayerSpeaker(speaker) {
       const normalized = (speaker || "").trim();
       const playerName = state.worldbook?.playerState?.name || "";
       return normalized === "你" || normalized === "玩家" || normalized === playerName;
     }
-
     function splitDialogueContentSegments(speaker, speech, role) {
-      const cleanSpeech = (speech || "").replace(/^[“"]|[”"]$/g, "").trim();
+      const cleanSpeech = (speech || "").replace(/^[""]/,"").replace(/["""]$/,"").trim();
       if (!cleanSpeech) return [];
-
       const actionHint = /(皱|抬|低|看|望|笑|沉默|点头|摇头|叹|停顿|顿了顿|恢复平静|迟疑|压低|提高|放轻|深吸|吸了口气|眯起|蹙|咬了咬|耸了耸|轻咳|清了清嗓|转身|站起|坐下|后退|上前|扫了|打量|瞥了)/;
       const speechHint = /(我|我们|你|你们|请|必须|可以|会|不会|不能|知道|明白|听着|马上|立刻|现在|已经|需要|应该|汇报|调查|走吧|好的|是的)/;
-      const sentences = cleanSpeech.match(/[^。！？!?]+[。！？!?]?/g)?.map(item => item.trim()).filter(Boolean) || [cleanSpeech];
-
+      const sentences = cleanSpeech.match(/[^。！？!?]+[。！？!?]?/g)?.map(i=>i.trim()).filter(Boolean) || [cleanSpeech];
       function isLikelyActionSentence(sentence) {
-        const text = sentence.trim().replace(new RegExp(`^${speaker}`), "").trim();
-        if (!text) return false;
-        if (/[“”"'「」]/.test(text)) return false;
+        const text = sentence.trim().replace(new RegExp(`^${speaker}`),"").trim();
+        if (!text) return false; if (/["""'「」]/.test(text)) return false;
         if (speechHint.test(text) && !actionHint.test(text)) return false;
         return actionHint.test(text);
       }
-
-      const leadingNarration = [];
-      const trailingNarration = [];
-      while (sentences.length > 1 && isLikelyActionSentence(sentences[0])) {
-        leadingNarration.push(sentences.shift());
-      }
-      while (sentences.length > 1 && isLikelyActionSentence(sentences[sentences.length - 1])) {
-        trailingNarration.unshift(sentences.pop());
-      }
-
+      const leadingNarration = []; const trailingNarration = [];
+      while (sentences.length > 1 && isLikelyActionSentence(sentences[0])) leadingNarration.push(sentences.shift());
+      while (sentences.length > 1 && isLikelyActionSentence(sentences[sentences.length-1])) trailingNarration.unshift(sentences.pop());
       const segments = [];
-      if (leadingNarration.length) {
-        segments.push({
-          type: "narration",
-          content: `${speaker}${leadingNarration.join("")}`.trim()
-        });
-      }
+      if (leadingNarration.length) segments.push({ type:"narration", content:`${speaker}${leadingNarration.join("")}`.trim() });
       const spokenText = sentences.join("").trim();
-      if (spokenText) {
-        segments.push({
-          type: "speech",
-          speaker: speaker || "人物",
-          role,
-          content: `“${spokenText}”`
-        });
-      }
-      if (trailingNarration.length) {
-        segments.push({
-          type: "narration",
-          content: `${speaker}${trailingNarration.join("")}`.trim()
-        });
-      }
+      if (spokenText) segments.push({ type:"speech", speaker: speaker||"人物", role, content:`\u201c${spokenText}\u201d` });
+      if (trailingNarration.length) segments.push({ type:"narration", content:`${speaker}${trailingNarration.join("")}`.trim() });
       return segments;
     }
-
-    function normalizeAssistantMarkup(text) {
-      return stripHiddenPayloadTags(stripOptionsFromAssistantText(text))
-        .replace(/```(?:xml|html|text)?/gi, "")
-        .replace(/```/g, "")
-        .trim();
+    function stripTrailingSignature(text) {
+      return text.replace(/\n?造世者\s*$/g,"").trim();
     }
-
+    function normalizeAssistantMarkup(text) {
+      return stripTrailingSignature(stripHiddenPayloadTags(stripOptionsFromAssistantText(text)).replace(/```(?:xml|html|text)?/gi,"").replace(/```/g,"").trim());
+    }
     function parseTaggedAssistantSegments(content) {
       const text = normalizeAssistantMarkup(content);
       const blockRegex = /<narration>([\s\S]*?)<\/narration>|<dialogue>([\s\S]*?)<\/dialogue>|<speaker>\s*([\s\S]*?)\s*<\/speaker>\s*<content>\s*([\s\S]*?)\s*<\/content>|<speech(?:\s+speaker=(?:"([^"]+)"|'([^']+)'))?\s*>([\s\S]*?)<\/speech>/gi;
-      const segments = [];
-      let lastIndex = 0;
-      let match;
-      let hasTags = false;
-
+      const segments = []; let lastIndex = 0; let match; let hasTags = false;
       while ((match = blockRegex.exec(text)) !== null) {
         hasTags = true;
         const between = text.slice(lastIndex, match.index).trim();
-        if (between) {
-          segments.push({ type: "narration", content: between });
-        }
-
-        if (typeof match[1] === "string") {
-          const inner = match[1].trim();
-          if (inner) {
-            segments.push({ type: "narration", content: inner });
-          }
-        } else if (typeof match[2] === "string") {
+        if (between) segments.push({ type:"narration", content:between });
+        if (typeof match[1] === "string") { const inner = match[1].trim(); if (inner) segments.push({ type:"narration", content:inner }); }
+        else if (typeof match[2] === "string") {
           const inner = match[2].trim();
           const speakerMatch = inner.match(/<speaker>\s*([\s\S]*?)\s*<\/speaker>/i);
           const contentMatch = inner.match(/<content>\s*([\s\S]*?)\s*<\/content>/i);
           const speaker = speakerMatch ? speakerMatch[1].trim() : "";
           const speech = contentMatch ? contentMatch[1].trim() : "";
-          if (speaker && speech) {
-            segments.push(...splitDialogueContentSegments(speaker, speech, isPlayerSpeaker(speaker) ? "user" : "npc"));
-          } else if (inner) {
-            segments.push({ type: "narration", content: inner });
-          }
+          if (speaker && speech) segments.push(...splitDialogueContentSegments(speaker, speech, isPlayerSpeaker(speaker)?"user":"npc"));
+          else if (inner) segments.push({ type:"narration", content:inner });
         } else if (typeof match[3] === "string" && typeof match[4] === "string") {
-          const speaker = match[3].trim();
-          const speech = match[4].trim();
-          if (speaker && speech) {
-            segments.push(...splitDialogueContentSegments(speaker, speech, isPlayerSpeaker(speaker) ? "user" : "npc"));
-          }
+          const speaker = match[3].trim(); const speech = match[4].trim();
+          if (speaker && speech) segments.push(...splitDialogueContentSegments(speaker, speech, isPlayerSpeaker(speaker)?"user":"npc"));
         } else {
-          const speaker = (match[5] || match[6] || "").trim();
-          const inner = (match[7] || "").trim();
-          if (inner) {
-            segments.push(...splitDialogueContentSegments(speaker || "人物", inner, isPlayerSpeaker(speaker) ? "user" : "npc"));
-          }
+          const speaker = (match[5]||match[6]||"").trim(); const inner = (match[7]||"").trim();
+          if (inner) segments.push(...splitDialogueContentSegments(speaker||"人物", inner, isPlayerSpeaker(speaker)?"user":"npc"));
         }
-
         lastIndex = match.index + match[0].length;
       }
-
       const tail = text.slice(lastIndex).trim();
-      if (tail) {
-        segments.push({ type: "narration", content: tail });
-      }
-
-      return hasTags ? segments.filter(segment => segment.content) : null;
+      if (tail) segments.push({ type:"narration", content:tail });
+      return hasTags ? segments.filter(s=>s.content) : null;
     }
-
     function flattenTaggedAssistantText(content) {
       const tagged = parseTaggedAssistantSegments(content);
-      if (!tagged) {
-        return normalizeAssistantMarkup(content);
-      }
-      return tagged
-        .map(segment => segment.content)
-        .join("\n")
-        .replace(/\n{3,}/g, "\n\n")
-        .trim();
+      if (!tagged) return normalizeAssistantMarkup(content);
+      return tagged.map(s=>s.content).join("\n").replace(/\n{3,}/g,"\n\n").trim();
     }
-
     function getDisplayContent(role, content) {
-      if (role === "assistant") {
-        return flattenTaggedAssistantText(content);
-      }
+      if (role === "assistant") return flattenTaggedAssistantText(content);
       return content;
     }
-
+    function parseLineDialogueSegments(text) {
+      const lines = text.split("\n").map(l=>l.trim()).filter(Boolean);
+      if (lines.length < 2) return null;
+      const segments = []; let hitDialogue = false;
+      const speakerOnly = /^([\u4e00-\u9fa5A-Za-z0-9·]{1,10})$/;
+      const speakerWithColon = /^([\u4e00-\u9fa5A-Za-z0-9·]{1,10})[：:]\s*(.+)$/;
+      const optionLine = /^\d{1,2}[\.\)、\)]/;
+      const helperLine = /^(可选行动|选项|请输入(?:你的)?选择|请选择)/;
+      function canBeSpeechLine(line) {
+        if (!line) return false;
+        if (optionLine.test(line) || helperLine.test(line)) return false;
+        if (/^<\/?(?:dialogue|speaker|content|speech|narration)/i.test(line)) return false;
+        return line.length <= 140;
+      }
+      for (let i = 0; i < lines.length; i++) {
+        const line = lines[i];
+        if (optionLine.test(line) || helperLine.test(line)) { segments.push({ type:"narration", content:line }); continue; }
+        const colonMatch = line.match(speakerWithColon);
+        if (colonMatch) { const speaker = colonMatch[1].trim(); const speech = colonMatch[2].trim();
+          if (speaker && speech) { hitDialogue = true; segments.push(...splitDialogueContentSegments(speaker, speech, isPlayerSpeaker(speaker)?"user":"npc")); continue; }
+        }
+        const speakerOnlyMatch = line.match(speakerOnly);
+        if (speakerOnlyMatch && i+1 < lines.length) { const speaker = speakerOnlyMatch[1].trim(); const nextLine = lines[i+1];
+          if (canBeSpeechLine(nextLine) && !speakerWithColon.test(nextLine)) { hitDialogue = true; segments.push(...splitDialogueContentSegments(speaker, nextLine, isPlayerSpeaker(speaker)?"user":"npc")); i += 1; continue; }
+        }
+        segments.push({ type:"narration", content:line });
+      }
+      return hitDialogue ? segments.filter(s=>s.content) : null;
+    }
     function splitAssistantIntoSegments(content) {
       const tagged = parseTaggedAssistantSegments(content);
-      if (tagged) {
-        return tagged;
-      }
-
+      if (tagged) return tagged.map(s => s.type === "narration" ? { ...s, content: stripTrailingSignature(s.content) } : s).filter(s => s.content);
       const text = normalizeAssistantMarkup(content);
       if (!text) return [];
+      const lineBased = parseLineDialogueSegments(text);
+      if (lineBased) return lineBased.map(s => s.type === "narration" ? { ...s, content: stripTrailingSignature(s.content) } : s).filter(s => s.content);
       const segments = [];
       const patterns = [
-        {
-          type: "player_embedded",
-          regex: /[“"]([^”"]+)[”"][，,]?\s*你(?:向[^，。！？\n]+)?(?:说明来意|解释道|说道|说|问|回答|补充说|开口说)[，,、\s]*[“"]([^”"]+)[”"]/g
-        },
-        {
-          type: "strict",
-          regex: /([\u4e00-\u9fa5A-Za-z0-9·]{1,16})说[：:\s]*[“"]([^”"]+)[”"]/g
-        },
-        {
-          type: "narrated",
-          regex: /([\u4e00-\u9fa5A-Za-z0-9·]{1,16}[^。！？\n“”"]{0,48}?)说[：:\s]*[“"]([^”"]+)[”"]/g
-        }
+        { type:"player_embedded", regex:/["""]([^""]+)["""][，,]?\s*你(?:向[^，。！？\n]+)?(?:说明来意|解释道|说道|说|问|回答|补充说|开口说)[，,、\s]*["""]([^""]+)["""]/g },
+        { type:"strict", regex:/([\u4e00-\u9fa5A-Za-z0-9·]{1,16})说[：:\s]*["""]([^""]+)["""]/g },
+        { type:"narrated", regex:/([\u4e00-\u9fa5A-Za-z0-9·]{1,16}[^。！？\n""]{0,48}?)说[：:\s]*["""]([^""]+)["""]/g }
       ];
-
-      function normalizeSpeech(textPartA, textPartB = "") {
-        const left = textPartA.trim().replace(/[，,]\s*$/, "，");
-        const right = textPartB.trim().replace(/^[，,\s]+/, "");
-        return right ? `“${left}${right}”` : `“${left}”`;
-      }
-
-      function extractSpeakerFromNarratedPrefix(prefix) {
-        const match = prefix.match(/^([\u4e00-\u9fa5A-Za-z0-9·]{1,8}?)(?=(?:抬|低|看|皱|笑|沉|点|站|坐|转|望|听|开|走|拿|挥|叹|清|向|没|若|略|缓|顿|想|神|眼|，|,|。|！|？|；|$))/);
-        return match ? match[1].trim() : "人物";
-      }
-
-      function appendNarration(textPart) {
-        const narration = textPart.trim();
-        if (narration) {
-          segments.push({ type: "narration", content: narration });
-        }
-      }
-
+      function normalizeSpeech(a,b="") { const left = a.trim().replace(/[，,]\s*$/,"，"); const right = b.trim().replace(/^[，,\s]+/,""); return right ? `\u201c${left}${right}\u201d` : `\u201c${left}\u201d`; }
+      function extractSpeakerFromNarratedPrefix(prefix) { const match = prefix.match(/^([\u4e00-\u9fa5A-Za-z0-9·]{1,8}?)(?=(?:抬|低|看|皱|笑|沉|点|站|坐|转|望|听|开|走|拿|挥|叹|清|向|没|若|略|缓|顿|想|神|眼|，|,|。|！|？|；|$))/); return match ? match[1].trim() : "人物"; }
+      function appendNarration(tp) { const n = tp.trim(); if (n) segments.push({ type:"narration", content:n }); }
       let cursor = 0;
-
       while (cursor < text.length) {
         let next = null;
-
-        for (const pattern of patterns) {
-          pattern.regex.lastIndex = cursor;
-          const match = pattern.regex.exec(text);
-          if (!match) continue;
-          if (!next || match.index < next.index) {
-            next = { type: pattern.type, match, index: match.index };
-          }
-        }
-
-        if (!next) {
-          appendNarration(text.slice(cursor));
-          break;
-        }
-
+        for (const pattern of patterns) { pattern.regex.lastIndex = cursor; const match = pattern.regex.exec(text); if (!match) continue; if (!next || match.index < next.index) next = { type:pattern.type, match, index:match.index }; }
+        if (!next) { appendNarration(text.slice(cursor)); break; }
         appendNarration(text.slice(cursor, next.index));
-
-        if (next.type === "player_embedded") {
-          segments.push({
-            type: "speech",
-            speaker: state.worldbook?.playerState?.name || "玩家",
-            role: "user",
-            content: normalizeSpeech(next.match[1], next.match[2])
-          });
-          cursor = next.index + next.match[0].length;
-          continue;
-        }
-
-        if (next.type === "strict") {
-          const speaker = next.match[1].trim();
-          const speech = next.match[2].trim();
-          if (speaker && speech) {
-            segments.push({
-              type: "speech",
-              speaker,
-              role: isPlayerSpeaker(speaker) ? "user" : "npc",
-              content: `“${speech}”`
-            });
-          }
-          cursor = next.index + next.match[0].length;
-          continue;
-        }
-
-        const fullPrefix = next.match[1].trim();
-        const speech = next.match[2].trim();
+        if (next.type === "player_embedded") { segments.push({ type:"speech", speaker:state.worldbook?.playerState?.name||"玩家", role:"user", content:normalizeSpeech(next.match[1],next.match[2]) }); cursor = next.index+next.match[0].length; continue; }
+        if (next.type === "strict") { const speaker = next.match[1].trim(); const speech = next.match[2].trim(); if (speaker && speech) segments.push({ type:"speech", speaker, role:isPlayerSpeaker(speaker)?"user":"npc", content:`\u201c${speech}\u201d` }); cursor = next.index+next.match[0].length; continue; }
+        const fullPrefix = next.match[1].trim(); const speech = next.match[2].trim();
         const speaker = extractSpeakerFromNarratedPrefix(fullPrefix);
-        const narrationPart = fullPrefix
-          .replace(/[，,：:\s]*$/g, "")
-          .trim();
-
-        if (narrationPart && narrationPart !== speaker) {
-          segments.push({ type: "narration", content: narrationPart });
-        }
-        if (speech) {
-          segments.push({ type: "speech", speaker, role: isPlayerSpeaker(speaker) ? "user" : "npc", content: `“${speech}”` });
-        }
-        cursor = next.index + next.match[0].length;
+        const narrationPart = fullPrefix.replace(/[，,：:\s]*$/g,"").trim();
+        if (narrationPart && narrationPart !== speaker) segments.push({ type:"narration", content:narrationPart });
+        if (speech) segments.push({ type:"speech", speaker, role:isPlayerSpeaker(speaker)?"user":"npc", content:`\u201c${speech}\u201d` });
+        cursor = next.index+next.match[0].length;
       }
-
-      return segments.length ? segments : text ? [{ type: "narration", content: text }] : [];
+      return segments.length ? segments : text ? [{ type:"narration", content:text }] : [];
     }
 
     function refreshOptionStrip() {
@@ -2294,59 +2097,30 @@
       const options = latestAssistantWithOptions ? extractOptionsFromText(latestAssistantWithOptions.content || "") : [];
       const leadText = latestAssistantWithOptions ? extractOptionLeadText(latestAssistantWithOptions.content || "") : "";
       els.optionStrip.innerHTML = "";
-
       if (!options.length || state.busy) {
-        els.optionOverlay.classList.remove("visible", "open");
+        els.optionOverlay.classList.remove("visible","open");
         els.optionTitle.textContent = "可选行动";
         els.optionSubtitle.textContent = "点按即可立刻发送，也可以继续自由输入。";
-        updateOptionControls(false);
-        return;
+        updateOptionControls(false); return;
       }
-
       for (const option of options) {
         const button = document.createElement("button");
-        button.type = "button";
-        button.className = "option-chip";
+        button.type = "button"; button.className = "option-chip";
         button.innerHTML = `<strong>选项 ${escapeHtml(option.index)}</strong>${escapeHtml(option.label)}`;
         button.addEventListener("click", () => sendTurn(option.label));
         els.optionStrip.appendChild(button);
       }
-
       els.optionOverlay.classList.add("visible");
       els.optionTitle.textContent = leadText || "可选行动";
       els.optionSubtitle.textContent = leadText ? "" : "点按即可立刻发送，也可以继续自由输入。";
       updateOptionControls(true);
     }
-
-    function hashString(value) {
-      let hash = 0;
-      for (let i = 0; i < value.length; i++) {
-        hash = (hash * 31 + value.charCodeAt(i)) >>> 0;
-      }
-      return hash;
-    }
-
+    function hashString(value) { let hash = 0; for (let i = 0; i < value.length; i++) hash = (hash * 31 + value.charCodeAt(i)) >>> 0; return hash; }
     function getNpcPalette(name) {
-      const hash = hashString(name);
-      const hue = hash % 360;
-
-      if (state.theme === "crt") {
-        return {
-          bg: `hsla(${hue}, 70%, 14%, 0.82)`,
-          line: `hsla(${hue}, 82%, 62%, 0.48)`,
-          name: `hsla(${hue}, 88%, 72%, 1)`,
-          text: "var(--text)"
-        };
-      }
-
-      return {
-        bg: `hsla(${hue}, 62%, 92%, 0.96)`,
-        line: `hsla(${hue}, 46%, 58%, 0.36)`,
-        name: `hsla(${hue}, 58%, 36%, 1)`,
-        text: "var(--text)"
-      };
+      const hash = hashString(name); const hue = hash % 360;
+      if (state.theme === "crt") return { bg:`hsla(${hue},65%,12%,0.85)`, line:`hsla(${hue},78%,58%,0.4)`, name:`hsla(${hue},85%,70%,1)`, text:"var(--text)" };
+      return { bg:`hsla(${hue},55%,93%,0.96)`, line:`hsla(${hue},40%,62%,0.3)`, name:`hsla(${hue},52%,38%,1)`, text:"var(--text)" };
     }
-
     function createMessageElement(role, content = "", options = {}) {
       const div = document.createElement("article");
       const classes = ["msg", role];
@@ -2362,103 +2136,170 @@
         div.style.setProperty("--npc-name", palette.name);
         div.style.setProperty("--npc-text", palette.text);
       }
-      els.log.appendChild(div);
-      els.log.scrollTop = els.log.scrollHeight;
-      return div;
+      els.log.appendChild(div); trimDomHead(); els.log.scrollTop = els.log.scrollHeight; return div;
     }
-
     function renderMessage(role, content, meta = {}) {
       if (role === "assistant") {
         for (const segment of splitAssistantIntoSegments(content)) {
-          if (segment.type === "speech") {
-            createMessageElement(segment.role || "npc", segment.content, {
-              speech: true,
-              label: segment.speaker,
-              raw: true
-            });
-          } else {
-            createMessageElement("assistant", segment.content, {
-              raw: true,
-              label: meta.assistantLabel || getAssistantLabel(meta.stage),
-              hideLabel: true
-            });
-          }
+          if (segment.type === "speech") createMessageElement(segment.role||"npc", segment.content, { speech:true, label:segment.speaker, raw:true });
+          else createMessageElement("assistant", segment.content, { raw:true, label:meta.assistantLabel||getAssistantLabel(meta.stage), hideLabel:true });
         }
         return;
       }
-
-      if (role === "user") {
-        createMessageElement("user", content, {
-          speech: true,
-          label: state.worldbook?.playerState?.name || "玩家",
-          raw: true
-        });
-        return;
-      }
-
-      createMessageElement(role, content, { raw: true });
+      if (role === "user") { createMessageElement("user", content, { speech:true, label:state.worldbook?.playerState?.name||"玩家", raw:true }); return; }
+      createMessageElement(role, content, { raw:true });
     }
-
-    function appendSystemMessage(text) {
-      if (!text) return;
-      createMessageElement("system", text);
-    }
-
+    function appendSystemMessage(text) { if (!text) return; createMessageElement("system", text); }
     function renderEmptyState() {
       clearLog();
-      const empty = document.createElement("div");
-      empty.className = "empty-state";
+      const empty = document.createElement("div"); empty.className = "empty-state";
       empty.innerHTML = `
         <section class="empty-card">
           <h2>一页纸，一块屏，两种叙事表面。</h2>
-          <p>这是一个手机样式的聊天界面。打开设置完成模型与世界设定，或直接从这里开始一轮新冒险。</p>
+          <p>打开设置完成模型与世界设定，或直接从这里开始一轮新冒险。造世者将与你共同构建世界观、角色和剧情。</p>
           <div class="empty-actions">
             <button id="emptyStartBtn" class="primary-btn" type="button">开始新冒险</button>
             <button id="emptySettingsBtn" class="ghost-btn" type="button">打开设置</button>
           </div>
-        </section>
-      `;
+        </section>`;
       els.log.appendChild(empty);
       document.getElementById("emptyStartBtn").addEventListener("click", startAdventure);
       document.getElementById("emptySettingsBtn").addEventListener("click", openSettings);
     }
+    function getVisibleMessages() {
+      return state.messages.filter(msg => msg.role !== "system" && !msg.hidden);
+    }
 
-    function redrawLogFromState() {
-      if (!state.messages.length) {
-        renderEmptyState();
+    function trimDomHead() {
+      const children = els.log.children;
+      while (children.length > DOM_NODE_CAP) {
+        const first = children[0];
+        if (first && first.classList.contains("scroll-sentinel")) break;
+        if (first && first.classList.contains("load-more-hint")) break;
+        first.remove();
+      }
+    }
+
+    function ensureScrollSentinel() {
+      if (els.log.querySelector(".scroll-sentinel")) return;
+      const sentinel = document.createElement("div");
+      sentinel.className = "scroll-sentinel";
+      els.log.prepend(sentinel);
+      const hint = document.createElement("div");
+      hint.className = "load-more-hint";
+      hint.textContent = "↑ 向上滚动加载更早的消息";
+      sentinel.after(hint);
+      if (!state._scrollObserver) {
+        state._scrollObserver = new IntersectionObserver(entries => {
+          for (const entry of entries) {
+            if (entry.isIntersecting) prependOlderMessages(10);
+          }
+        }, { root: els.log, threshold: 0.1 });
+      }
+      state._scrollObserver.observe(sentinel);
+    }
+
+    function removeScrollSentinel() {
+      const sentinel = els.log.querySelector(".scroll-sentinel");
+      const hint = els.log.querySelector(".load-more-hint");
+      if (state._scrollObserver && sentinel) state._scrollObserver.unobserve(sentinel);
+      if (sentinel) sentinel.remove();
+      if (hint) hint.remove();
+    }
+
+    function prependOlderMessages(count) {
+      const allVisible = getVisibleMessages();
+      const currentDomMsgCount = els.log.querySelectorAll(".msg").length;
+      const currentDomDividerCount = els.log.querySelectorAll(".turn-divider").length;
+      const renderedCount = currentDomMsgCount;
+      const totalVisible = allVisible.length;
+      const alreadyRendered = totalVisible - (state._renderOffset || 0);
+      if (state._renderOffset <= 0) {
+        removeScrollSentinel();
         return;
       }
-      clearLog();
+      const startIdx = Math.max(0, state._renderOffset - count);
+      const slice = allVisible.slice(startIdx, state._renderOffset);
+      if (!slice.length) { removeScrollSentinel(); return; }
+      const scrollHeightBefore = els.log.scrollHeight;
+      const scrollTopBefore = els.log.scrollTop;
+      const sentinel = els.log.querySelector(".scroll-sentinel");
+      const hint = els.log.querySelector(".load-more-hint");
+      const insertBefore = hint ? hint.nextSibling : (sentinel ? sentinel.nextSibling : els.log.firstChild);
       let lastTurnTimestamp = null;
-      for (const msg of state.messages) {
-        if (msg.role === "system" || msg.hidden) continue;
+      for (const msg of slice) {
         if (msg.turnTimestamp && msg.turnTimestamp !== lastTurnTimestamp) {
-          createTurnDivider(msg.turnTimestamp);
+          const div = document.createElement("div");
+          div.className = "turn-divider";
+          div.dataset.turn = String(msg.turnTimestamp);
+          div.textContent = formatTurnTime(msg.turnTimestamp);
+          els.log.insertBefore(div, insertBefore);
           lastTurnTimestamp = msg.turnTimestamp;
         }
+        const segments = msg.role === "assistant" ? splitAssistantIntoSegments(msg.content) : null;
+        if (segments) {
+          for (const segment of segments) {
+            const el = document.createElement("article");
+            if (segment.type === "speech") {
+              el.className = "msg " + (segment.role || "npc") + " speech";
+              el.dataset.role = segment.speaker;
+              el.textContent = segment.content;
+              if ((segment.role || "npc") === "npc" && segment.speaker) {
+                const palette = getNpcPalette(segment.speaker);
+                el.style.setProperty("--npc-bg", palette.bg);
+                el.style.setProperty("--npc-line", palette.line);
+                el.style.setProperty("--npc-name", palette.name);
+                el.style.setProperty("--npc-text", palette.text);
+              }
+            } else {
+              el.className = "msg assistant no-label";
+              el.dataset.role = msg.assistantLabel || getAssistantLabel(msg.stage);
+              el.textContent = segment.content;
+            }
+            els.log.insertBefore(el, insertBefore);
+          }
+        } else if (msg.role === "user") {
+          const el = document.createElement("article");
+          el.className = "msg user speech";
+          el.dataset.role = state.worldbook?.playerState?.name || "玩家";
+          el.textContent = msg.content;
+          els.log.insertBefore(el, insertBefore);
+        } else {
+          const el = document.createElement("article");
+          el.className = "msg " + msg.role;
+          el.dataset.role = "系统";
+          el.textContent = msg.content;
+          els.log.insertBefore(el, insertBefore);
+        }
+      }
+      state._renderOffset = startIdx;
+      const scrollHeightAfter = els.log.scrollHeight;
+      els.log.scrollTop = scrollTopBefore + (scrollHeightAfter - scrollHeightBefore);
+      if (startIdx <= 0) removeScrollSentinel();
+    }
+
+    function redrawLogFromState() {
+      if (!state.messages.length) { renderEmptyState(); return; }
+      clearLog();
+      const allVisible = getVisibleMessages();
+      const total = allVisible.length;
+      const renderStart = Math.max(0, total - DOM_RENDER_TAIL);
+      state._renderOffset = renderStart;
+      if (renderStart > 0) ensureScrollSentinel();
+      const slice = allVisible.slice(renderStart);
+      let lastTurnTimestamp = null;
+      for (const msg of slice) {
+        if (msg.turnTimestamp && msg.turnTimestamp !== lastTurnTimestamp) { createTurnDivider(msg.turnTimestamp); lastTurnTimestamp = msg.turnTimestamp; }
         renderMessage(msg.role, msg.content, msg);
       }
       refreshOptionStrip();
     }
-
     function createThinkingMessage() {
       const div = document.createElement("article");
-      div.className = "msg assistant no-label";
-      div.dataset.role = getAssistantLabel();
-      const message = state.sessionStage === "setup"
-        ? "造世者正在整理世界设问…"
-        : state.sessionStage === "bootstrap"
-          ? "造世者正在编织世界档案…"
-          : "造世者正在推进剧情…";
-      div.innerHTML = `
-        <div class="thinking-wrap">
-          <div class="loader"><span></span><span></span><span></span></div>
-          <span>${message}</span>
-        </div>
-      `;
-      els.log.appendChild(div);
-      els.log.scrollTop = els.log.scrollHeight;
-      return div;
+      div.className = "msg assistant no-label"; div.dataset.role = getAssistantLabel();
+      const message = state.sessionStage === "setup" ? "造世者正在整理世界设问…" : state.sessionStage === "bootstrap" ? "造世者正在编织世界档案…" : "造世者正在推进剧情…";
+      div.innerHTML = `<div class="thinking-wrap"><div class="loader"><span></span><span></span><span></span></div><span>${message}</span></div>`;
+      els.log.appendChild(div); trimDomHead(); els.log.scrollTop = els.log.scrollHeight; return div;
     }
 
     async function streamChat(messages, options = {}) {
@@ -2466,552 +2307,253 @@
       if (!cfg.apiKey) throw new Error("请先在设置里输入 API Key");
       if (!cfg.apiBase) throw new Error("API 地址不能为空");
       if (!cfg.modelName) throw new Error("模型名不能为空");
-
-      const response = await fetch(cfg.apiBase, {
-        method: "POST",
-        headers: {
-          "Content-Type": "application/json",
-          "Authorization": `Bearer ${cfg.apiKey}`
-        },
-        body: JSON.stringify({
-          model: cfg.modelName,
-          messages,
-          temperature: options.temperature ?? 0.85,
-          top_p: options.topP ?? 0.95,
-          max_tokens: options.maxTokens ?? 700,
-          stream: true
-        })
+      const response = await fetch(cfg.apiBase, { method:"POST",
+        headers:{ "Content-Type":"application/json", "Authorization":`Bearer ${cfg.apiKey}` },
+        body: JSON.stringify({ model:cfg.modelName, messages, temperature:options.temperature??0.85, top_p:options.topP??0.95, max_tokens:options.maxTokens??700, stream:true })
       });
-
-      if (!response.ok) {
-        let details = "";
-        try {
-          details = await response.text();
-        } catch (_) {}
-        throw new Error(`请求失败 (${response.status})${details ? " | " + details.slice(0, 300) : ""}`);
-      }
-
-      if (!response.body) {
-        throw new Error("浏览器不支持流式响应");
-      }
-
+      if (!response.ok) { let details = ""; try { details = await response.text(); } catch(_) {} throw new Error(`请求失败 (${response.status})${details ? " | "+details.slice(0,300) : ""}`); }
+      if (!response.body) throw new Error("浏览器不支持流式响应");
       return response.body.getReader();
     }
-
     async function requestChatOnce(messages, options = {}) {
       const cfg = getConfig();
       if (!cfg.apiKey) throw new Error("请先在设置里输入 API Key");
       if (!cfg.apiBase) throw new Error("API 地址不能为空");
       if (!cfg.modelName) throw new Error("模型名不能为空");
-
-      const response = await fetch(cfg.apiBase, {
-        method: "POST",
-        headers: {
-          "Content-Type": "application/json",
-          "Authorization": `Bearer ${cfg.apiKey}`
-        },
-        body: JSON.stringify({
-          model: cfg.modelName,
-          messages,
-          temperature: options.temperature ?? 0.7,
-          top_p: options.topP ?? 0.95,
-          max_tokens: options.maxTokens ?? 1800,
-          stream: false
-        })
+      const response = await fetch(cfg.apiBase, { method:"POST",
+        headers:{ "Content-Type":"application/json", "Authorization":`Bearer ${cfg.apiKey}` },
+        body: JSON.stringify({ model:cfg.modelName, messages, temperature:options.temperature??0.7, top_p:options.topP??0.95, max_tokens:options.maxTokens??1800, stream:false })
       });
-
-      if (!response.ok) {
-        let details = "";
-        try {
-          details = await response.text();
-        } catch (_) {}
-        throw new Error(`请求失败 (${response.status})${details ? " | " + details.slice(0, 300) : ""}`);
-      }
-
+      if (!response.ok) { let details = ""; try { details = await response.text(); } catch(_) {} throw new Error(`请求失败 (${response.status})${details ? " | "+details.slice(0,300) : ""}`); }
       const json = await response.json();
       const text = json?.choices?.[0]?.message?.content?.trim() || "";
-      const usage = json?.usage
-        ? `tokens: prompt ${json.usage.prompt_tokens ?? "-"}, completion ${json.usage.completion_tokens ?? "-"}`
-        : "";
-
+      const usage = json?.usage ? `tokens: prompt ${json.usage.prompt_tokens??"-"}, completion ${json.usage.completion_tokens??"-"}` : "";
       return { text, usageText: usage };
     }
-
     async function classifyVisibleAssistantOutput(text, stage = state.sessionStage) {
       const visibleText = stripHiddenPayloadTags(text).trim();
       if (!visibleText) return "";
-
       try {
-        const result = await requestChatOnce([
-          { role: "system", content: buildClassificationSystemPrompt(stage) },
-          { role: "user", content: visibleText }
-        ], {
-          temperature: 0.2,
-          maxTokens: 1400
-        });
-
+        const result = await requestChatOnce([{ role:"system", content:buildClassificationSystemPrompt(stage) },{ role:"user", content:visibleText }], { temperature:0.2, maxTokens:1400 });
         const normalized = stripHiddenPayloadTags(result.text || "").trim();
         return normalized || visibleText;
-      } catch (_) {
-        return visibleText;
-      }
+      } catch(_) { return visibleText; }
     }
-
     async function consumeSseStream(reader, handlers) {
-      const decoder = new TextDecoder("utf-8");
-      let buffer = "";
-      let usageText = "";
-
+      const decoder = new TextDecoder("utf-8"); let buffer = ""; let usageText = "";
       while (true) {
-        const { value, done } = await reader.read();
-        if (done) break;
-        buffer += decoder.decode(value, { stream: true });
-        const parts = buffer.split("\n");
-        buffer = parts.pop() || "";
-
+        const { value, done } = await reader.read(); if (done) break;
+        buffer += decoder.decode(value, { stream:true });
+        const parts = buffer.split("\n"); buffer = parts.pop() || "";
         for (const rawLine of parts) {
-          const line = rawLine.trim();
-          if (!line || !line.startsWith("data:")) continue;
-          const data = line.slice(5).trim();
-          if (data === "[DONE]") continue;
-          let json;
-          try {
-            json = JSON.parse(data);
-          } catch (_) {
-            continue;
-          }
-          const delta = json?.choices?.[0]?.delta?.content || "";
-          if (delta) handlers.onDelta(delta);
-          if (json?.usage) {
-            usageText = `tokens: prompt ${json.usage.prompt_tokens ?? "-"}, completion ${json.usage.completion_tokens ?? "-"}`;
-          }
+          const line = rawLine.trim(); if (!line || !line.startsWith("data:")) continue;
+          const data = line.slice(5).trim(); if (data === "[DONE]") continue;
+          let json; try { json = JSON.parse(data); } catch(_) { continue; }
+          const delta = json?.choices?.[0]?.delta?.content || ""; if (delta) handlers.onDelta(delta);
+          if (json?.usage) usageText = `tokens: prompt ${json.usage.prompt_tokens??"-"}, completion ${json.usage.completion_tokens??"-"}`;
         }
       }
-
       if (buffer.trim().startsWith("data:")) {
         const data = buffer.trim().slice(5).trim();
-        if (data && data !== "[DONE]") {
-          try {
-            const json = JSON.parse(data);
-            const delta = json?.choices?.[0]?.delta?.content || "";
-            if (delta) handlers.onDelta(delta);
-            if (json?.usage) {
-              usageText = `tokens: prompt ${json.usage.prompt_tokens ?? "-"}, completion ${json.usage.completion_tokens ?? "-"}`;
-            }
-          } catch (_) {}
-        }
+        if (data && data !== "[DONE]") { try { const json = JSON.parse(data); const delta = json?.choices?.[0]?.delta?.content||""; if (delta) handlers.onDelta(delta); if (json?.usage) usageText = `tokens: prompt ${json.usage.prompt_tokens??"-"}, completion ${json.usage.completion_tokens??"-"}`; } catch(_){} }
       }
-
       return usageText;
     }
-
     async function collectStreamText(reader) {
       let finalText = "";
-      const usageText = await consumeSseStream(reader, {
-        onDelta(delta) {
-          finalText += delta;
-        }
-      });
-
-      return { text: finalText.trim(), usageText };
+      const usageText = await consumeSseStream(reader, { onDelta(delta) { finalText += delta; } });
+      return { text:finalText.trim(), usageText };
+    }
+    let _scrollPending = false;
+    function scheduleScroll() {
+      if (!_scrollPending) { _scrollPending = true; requestAnimationFrame(() => { els.log.scrollTop = els.log.scrollHeight; _scrollPending = false; }); }
     }
 
     async function typewriterTextToElement(finalText, placeholderEl) {
-      if (!finalText.trim()) {
-        throw new Error("模型返回为空");
-      }
-
+      if (!finalText.trim()) throw new Error("模型返回为空");
       const segments = splitAssistantIntoSegments(finalText);
       const charsPerSecond = Math.max(10, Number.parseInt(getConfig().textSpeed, 10) || DEFAULT_TEXT_SPEED);
       const charsPerTick = Math.max(1, Math.round(charsPerSecond / 24));
       const tickDelay = Math.max(16, Math.round((charsPerTick / charsPerSecond) * 1000));
-
-      setBusy(true, "streaming");
-      setStatus("剧情输出中…");
-      placeholderEl.remove();
-
+      setBusy(true, "streaming"); setStatus("剧情输出中…"); placeholderEl.remove();
       for (const segment of segments) {
         const el = segment.type === "speech"
-          ? createMessageElement(segment.role || "npc", "", {
-              speech: true,
-              label: segment.speaker,
-              raw: true
-            })
-          : createMessageElement("assistant", "", {
-              raw: true,
-              label: getAssistantLabel(),
-              hideLabel: true
-            });
-
-        const characters = [...(segment.content || "")];
-        el.classList.add("streaming");
-
+          ? createMessageElement(segment.role||"npc","",{ speech:true, label:segment.speaker, raw:true })
+          : createMessageElement("assistant","",{ raw:true, label:getAssistantLabel(), hideLabel:true });
+        const characters = [...(segment.content||"")]; el.classList.add("streaming");
         let shown = 0;
-        while (shown < characters.length) {
-          shown += charsPerTick;
-          el.textContent = characters.slice(0, shown).join("");
-          els.log.scrollTop = els.log.scrollHeight;
-          await new Promise(resolve => setTimeout(resolve, tickDelay));
-        }
-
-        el.classList.remove("streaming");
-        el.textContent = segment.content || "";
+        while (shown < characters.length) { shown += charsPerTick; el.textContent = characters.slice(0,shown).join(""); scheduleScroll(); await new Promise(r=>setTimeout(r,tickDelay)); }
+        el.classList.remove("streaming"); el.textContent = segment.content || "";
       }
-
+      scheduleScroll();
       return finalText.trim();
     }
 
-    function isSetupReady() {
-      return state.setupState?.status === "ready";
-    }
-
-    function isWorldbookReady() {
-      return state.worldbook?.status === "ready";
-    }
-
-    function hasReachedSetupLimit() {
-      return getSetupRoundCount() >= MAX_WORLDBUILD_ROUNDS;
-    }
+    function isSetupReady() { return state.setupState?.status === "ready"; }
+    function isWorldbookReady() { return state.worldbook?.status === "ready"; }
+    function hasReachedSetupLimit() { return getSetupRoundCount() >= MAX_WORLDBUILD_ROUNDS; }
 
     async function beginPlayStage() {
-      if (!state.worldbook) {
-        setStatus("世界档案尚未生成", true);
-        return;
-      }
-      state.sessionStage = "play";
-      state.currentTurnTimestamp = Date.now();
-      state.messages.push({
-        role: "user",
-        hidden: true,
-        stage: "play",
-        turnTimestamp: state.currentTurnTimestamp,
-        content: "世界档案已经编织完成。请严格根据既定 worldbook 开始正式剧情，从 mainPlot.opening 与 currentNodeId 对应节点开场，保持人物状态、世界规则与主线节点一致，并给出 2-3 个可选行动。"
-      });
-      updateSummary();
-      updateGameStateChip(getSessionLabel());
-      hideOptionStrip();
+      if (!state.worldbook) { setStatus("世界档案尚未生成", true); return; }
+      state.sessionStage = "play"; state.currentTurnTimestamp = Date.now();
+      state.messages.push({ role:"user", hidden:true, stage:"play", turnTimestamp:state.currentTurnTimestamp,
+        content:"世界档案已经编织完成。请严格根据既定 worldbook 开始正式剧情，从 mainPlot.opening 与 currentNodeId 对应节点开场，保持人物状态、世界规则与主线节点一致，并给出 2-3 个可选行动。" });
+      updateSummary(); updateGameStateChip(getSessionLabel()); hideOptionStrip();
       await requestVisibleAssistantReply("play");
     }
-
     async function requestVisibleAssistantReply(stage = state.sessionStage) {
       let completed = false;
-      setBusy(true, "thinking");
-      hideOptionStrip();
-      setStatus("模型正在思考…");
+      setBusy(true, "thinking"); hideOptionStrip(); setStatus("模型正在思考…");
       ensureTurnDivider(state.currentTurnTimestamp);
       const placeholder = createThinkingMessage();
-
       try {
         const reader = await streamChat(buildRequestMessages(stage));
-        const { text: rawText, usageText } = await collectStreamText(reader);
-        if (!rawText.trim()) {
-          throw new Error("模型返回为空");
-        }
-        if (stage === "setup") {
-          applySetupStateFromText(rawText);
-        } else {
-          applyStateUpdateFromText(rawText);
-        }
+        const { text:rawText, usageText } = await collectStreamText(reader);
+        if (!rawText.trim()) throw new Error("模型返回为空");
+        if (stage === "setup") applySetupStateFromText(rawText); else applyStateUpdateFromText(rawText);
         setStatus("正在整理叙事结构…");
         const classifiedText = await classifyVisibleAssistantOutput(rawText, stage);
         await typewriterTextToElement(classifiedText, placeholder);
-        state.messages.push({
-          role: "assistant",
-          content: classifiedText,
-          turnTimestamp: state.currentTurnTimestamp || Date.now(),
-          stage,
-          assistantLabel: getAssistantLabel()
-        });
-        updateSummary();
-        setStatus(usageText ? `回合完成，${usageText}` : "回合完成");
-        saveState(true);
-        completed = true;
+        state.messages.push({ role:"assistant", content:classifiedText, turnTimestamp:state.currentTurnTimestamp||Date.now(), stage, assistantLabel:getAssistantLabel() });
+        updateSummary(); setStatus(usageText ? `回合完成，${usageText}` : "回合完成"); saveState(true); completed = true;
+        if (stage === "play") {
+          const playMessages = state.messages.filter(m => m.stage === "play" && m.role !== "system");
+          const maxMessages = CONTEXT_WINDOW_SIZE * 2;
+          const prunedCount = playMessages.length - maxMessages;
+          if (prunedCount > 0 && prunedCount > state.lastSummarizedIndex) {
+            const toPrune = playMessages.slice(0, prunedCount);
+            state.lastSummarizedIndex = prunedCount;
+            summarizePrunedMessages(toPrune);
+          }
+        }
       } catch (err) {
-        placeholder.remove();
-        appendSystemMessage("错误：" + err.message);
-        refreshOptionStrip();
-        setStatus("调用失败，请检查模型配置或网络", true);
+        placeholder.remove(); appendSystemMessage("错误："+err.message);
+        refreshOptionStrip(); setStatus("调用失败，请检查模型配置或网络", true);
       } finally {
         setBusy(false);
         if (completed && stage === "setup" && (isSetupReady() || hasReachedSetupLimit())) {
           appendSystemMessage(isSetupReady() ? "世界观创建完成，造世者正在后台编织世界。" : `世界观问答达到 ${MAX_WORLDBUILD_ROUNDS} 轮上限，造世者将采用当前设定直接编织世界。`);
-          await runBootstrapPhase();
-          return;
+          await runBootstrapPhase(); return;
         }
         refreshOptionStrip();
       }
     }
-
     async function runBootstrapPhase() {
       if (state.busy) return;
-      state.sessionStage = "bootstrap";
-      updateSummary();
-      updateGameStateChip(getSessionLabel());
-      hideOptionStrip();
-      setBusy(true, "thinking");
-      setStatus("造世者正在编织世界…");
+      state.sessionStage = "bootstrap"; updateSummary(); updateGameStateChip(getSessionLabel());
+      hideOptionStrip(); setBusy(true, "thinking"); setStatus("造世者正在编织世界…");
       const placeholder = createThinkingMessage();
-
       try {
         const bootstrapMessages = buildBootstrapMessages();
-        const reader = await streamChat(bootstrapMessages, {
-          temperature: 0.6,
-          maxTokens: 2200
-        });
+        const reader = await streamChat(bootstrapMessages, { temperature:0.6, maxTokens:2200 });
         let { text, usageText } = await collectStreamText(reader);
-        if (!text) {
-          const fallback = await requestChatOnce(bootstrapMessages, {
-            temperature: 0.5,
-            maxTokens: 2200
-          });
-          text = fallback.text;
-          usageText = fallback.usageText || usageText;
-        }
+        if (!text) { const fallback = await requestChatOnce(bootstrapMessages, { temperature:0.5, maxTokens:2200 }); text = fallback.text; usageText = fallback.usageText || usageText; }
         placeholder.remove();
         if (!text) throw new Error("世界档案生成为空");
         if (!applyWorldbookDraftFromText(text)) throw new Error("世界档案解析失败");
-        state.worldbook = normalizeWorldbook({
-          ...state.worldbook,
-          status: "ready"
-        });
-        state.messages.push({
-          role: "assistant",
-          hidden: true,
-          content: text,
-          turnTimestamp: Date.now(),
-          stage: "bootstrap",
-          assistantLabel: getAssistantLabel("bootstrap")
-        });
-        saveState(true);
-        setStatus(usageText ? `世界编织完成，${usageText}` : "世界编织完成");
+        state.worldbook = normalizeWorldbook({ ...state.worldbook, status:"ready" });
+        state.messages.push({ role:"assistant", hidden:true, content:text, turnTimestamp:Date.now(), stage:"bootstrap", assistantLabel:getAssistantLabel("bootstrap") });
+        saveState(true); setStatus(usageText ? `世界编织完成，${usageText}` : "世界编织完成");
       } catch (err) {
-        placeholder.remove();
-        appendSystemMessage("错误：" + err.message);
+        placeholder.remove(); appendSystemMessage("错误："+err.message);
         setStatus("世界档案生成失败，请检查模型配置或稍后重试", true);
-        state.sessionStage = "setup";
-        updateSummary();
-        updateGameStateChip(getSessionLabel());
-        return;
-      } finally {
-        setBusy(false);
-      }
-
+        state.sessionStage = "setup"; updateSummary(); updateGameStateChip(getSessionLabel()); return;
+      } finally { setBusy(false); }
       appendSystemMessage("世界已经编织完成，正式剧情开始。");
       await beginPlayStage();
     }
-
     async function startAdventure() {
       if (state.busy) return;
       const cfg = getConfig();
-      if (!cfg.apiKey) {
-        openSettings();
-        setStatus("请先在设置里输入 API Key", true);
-        return;
-      }
-
-      state.started = true;
-      state.sessionStage = "setup";
+      if (!cfg.apiKey) { openSettings(); setStatus("请先在设置里输入 API Key", true); return; }
+      state.started = true; state.sessionStage = "setup";
       state.setupState = createInitialSetupState();
       state.worldbook = createInitialWorldbook(cfg);
-      state.lastUserInput = "";
-      state.currentTurnTimestamp = Date.now();
-      state.messages = [
-        {
-          role: "user",
-          hidden: true,
-          stage: "setup",
-          turnTimestamp: state.currentTurnTimestamp,
-          content: "开始新的游戏。先进入世界观创建阶段，不要进入正式剧情。严格按“先宏观、后微观”的顺序提问：先确认故事类型，再逐步确认世界概念、世界基调、核心冲突，以及玩家名字、身份、性格倾向和切入点。每轮只能问一个问题，并提供 2-3 个选项。剧情、NPC、主线节点和结局都由你在后台自行构建，不要向玩家征求意见。"
-        }
-      ];
+      state.lastUserInput = ""; state.currentTurnTimestamp = Date.now();
+      state.messages = [{ role:"user", hidden:true, stage:"setup", turnTimestamp:state.currentTurnTimestamp,
+        content:"开始新的游戏。先进入世界观创建阶段，不要进入正式剧情。严格按“先宏观、后微观”的顺序提问：先确认故事类型，再逐步确认世界概念、世界基调、核心冲突，以及玩家名字、身份、性格倾向和切入点。每轮只能问一个问题，并提供 2-3 个选项。剧情、NPC、主线节点和结局都由你在后台自行构建，不要向玩家征求意见。" }];
       redrawLogFromState();
       appendSystemMessage("已进入世界观创建阶段。你只需要参与世界观和自身角色设定；NPC、主线和结局会由造世者在后台生成。");
-      updateSummary();
-      updateGameStateChip(getSessionLabel());
+      updateSummary(); updateGameStateChip(getSessionLabel());
       await requestVisibleAssistantReply("setup");
     }
-
     async function sendTurn(text) {
       if (state.busy) return;
-      if (!state.started) {
-        setStatus("请先开始新冒险", true);
-        return;
-      }
-      const userText = text.trim();
-      if (!userText) return;
-
-      state.lastUserInput = userText;
-      state.currentTurnTimestamp = Date.now();
-      state.messages.push({
-        role: "user",
-        content: userText,
-        turnTimestamp: state.currentTurnTimestamp,
-        stage: state.sessionStage
-      });
+      if (!state.started) { setStatus("请先开始新冒险", true); return; }
+      const userText = text.trim(); if (!userText) return;
+      state.lastUserInput = userText; state.currentTurnTimestamp = Date.now();
+      state.messages.push({ role:"user", content:userText, turnTimestamp:state.currentTurnTimestamp, stage:state.sessionStage });
       if (els.log.querySelector(".empty-state")) clearLog();
       ensureTurnDivider(state.currentTurnTimestamp);
-      renderMessage("user", userText);
-      els.playerInput.value = "";
-      hideOptionStrip();
-
-      if (state.sessionStage === "setup") {
-        await requestVisibleAssistantReply("setup");
-        return;
-      }
-
+      renderMessage("user", userText); els.playerInput.value = ""; hideOptionStrip();
+      if (state.sessionStage === "setup") { await requestVisibleAssistantReply("setup"); return; }
       await requestVisibleAssistantReply("play");
     }
-
     async function retryLastTurn() {
       if (state.busy) return;
-      if (!state.started) {
-        setStatus("当前没有可重试的冒险", true);
-        return;
-      }
-
-      while (state.messages.length && state.messages[state.messages.length - 1].role === "assistant") {
-        state.messages.pop();
-      }
+      if (!state.started) { setStatus("当前没有可重试的冒险", true); return; }
+      while (state.messages.length && state.messages[state.messages.length-1].role === "assistant") state.messages.pop();
       const lastUser = [...state.messages].reverse().find(msg => msg.role === "user");
-      if (!lastUser) {
-        setStatus("没有可重试的上一轮", true);
-        return;
-      }
-      state.lastUserInput = lastUser.content;
-      state.currentTurnTimestamp = lastUser.turnTimestamp || Date.now();
-      state.sessionStage = lastUser.stage || state.sessionStage;
-      redrawLogFromState();
-      appendSystemMessage(`已移除上一条 ${getAssistantLabel(lastUser.stage || state.sessionStage)} 回复，正在重新生成…`);
-      hideOptionStrip();
-      await requestVisibleAssistantReply(state.sessionStage);
+      if (!lastUser) { setStatus("没有可重试的上一轮", true); return; }
+      state.lastUserInput = lastUser.content; state.currentTurnTimestamp = lastUser.turnTimestamp || Date.now();
+      state.sessionStage = lastUser.stage || state.sessionStage; redrawLogFromState();
+      appendSystemMessage(`已移除上一条 ${getAssistantLabel(lastUser.stage||state.sessionStage)} 回复，正在重新生成…`);
+      hideOptionStrip(); await requestVisibleAssistantReply(state.sessionStage);
     }
-
     async function validateModel() {
       if (state.busy) return;
-      const cfg = getConfig();
-      if (!cfg.apiKey) {
-        setStatus("请先输入 API Key", true);
-        return;
-      }
-
-      els.validateBtn.disabled = true;
-      els.validateStatus.textContent = "校验中…";
-      setStatus("正在校验模型连接…");
+      const cfg = getConfig(); if (!cfg.apiKey) { setStatus("请先输入 API Key", true); return; }
+      els.validateBtn.disabled = true; els.validateStatus.textContent = "校验中…"; setStatus("正在校验模型连接…");
       const startedAt = performance.now();
-
       try {
-        const response = await fetch(cfg.apiBase, {
-          method: "POST",
-          headers: {
-            "Content-Type": "application/json",
-            "Authorization": `Bearer ${cfg.apiKey}`
-          },
-          body: JSON.stringify({
-            model: cfg.modelName,
-            messages: [
-              { role: "system", content: "You are a validator." },
-              { role: "user", content: "Reply with OK only." }
-            ],
-            temperature: 0,
-            max_tokens: 8,
-            stream: false
-          })
+        const response = await fetch(cfg.apiBase, { method:"POST",
+          headers:{ "Content-Type":"application/json", "Authorization":`Bearer ${cfg.apiKey}` },
+          body: JSON.stringify({ model:cfg.modelName, messages:[{ role:"system", content:"You are a validator." },{ role:"user", content:"Reply with OK only." }], temperature:0, max_tokens:8, stream:false })
         });
-
-        if (!response.ok) {
-          const details = await response.text().catch(() => "");
-          throw new Error(`校验失败 (${response.status})${details ? " | " + details.slice(0, 240) : ""}`);
-        }
-
-        const data = await response.json();
-        const reply = data?.choices?.[0]?.message?.content?.trim();
+        if (!response.ok) { const details = await response.text().catch(()=>""); throw new Error(`校验失败 (${response.status})${details ? " | "+details.slice(0,240) : ""}`); }
+        const data = await response.json(); const reply = data?.choices?.[0]?.message?.content?.trim();
         if (!reply) throw new Error("接口可达，但返回为空");
-
         const ms = Math.round(performance.now() - startedAt);
-        state.validation = {
-          ok: true,
-          checkedAt: `${ms}ms`,
-          detail: `模型已校验 · ${ms}ms`
-        };
-        updateModelStatus();
-        setStatus(`模型连接正常，耗时 ${ms}ms`);
-        saveState(true);
+        state.validation = { ok:true, checkedAt:`${ms}ms`, detail:`模型已校验 · ${ms}ms` };
+        updateModelStatus(); setStatus(`模型连接正常，耗时 ${ms}ms`); saveState(true);
       } catch (err) {
-        state.validation = {
-          ok: false,
-          checkedAt: "",
-          detail: err.message
-        };
-        updateModelStatus();
-        setStatus(err.message, true);
-      } finally {
-        els.validateBtn.disabled = false;
-      }
+        state.validation = { ok:false, checkedAt:"", detail:err.message };
+        updateModelStatus(); setStatus(err.message, true);
+      } finally { els.validateBtn.disabled = false; }
     }
-
     function exportTranscript() {
-      const lines = [
-        "=== 文字冒险记录 ===",
-        `导出时间: ${new Date().toLocaleString()}`,
-        ""
-      ];
-
+      const lines = ["=== 文字冒险记录 ===", `导出时间: ${new Date().toLocaleString()}`, ""];
       for (const msg of state.messages) {
         if (msg.role === "system" || msg.hidden) continue;
-        lines.push(`[${msg.role === "assistant" ? (msg.assistantLabel || "造世者") : (state.worldbook?.playerState?.name || "玩家")}]`);
-        lines.push(msg.content);
-        lines.push("");
+        lines.push(`[${msg.role === "assistant" ? (msg.assistantLabel||"造世者") : (state.worldbook?.playerState?.name||"玩家")}]`);
+        lines.push(msg.content); lines.push("");
       }
-
-      const blob = new Blob([lines.join("\n")], { type: "text/plain;charset=utf-8" });
+      const blob = new Blob([lines.join("\n")], { type:"text/plain;charset=utf-8" });
       const url = URL.createObjectURL(blob);
-      const anchor = document.createElement("a");
-      anchor.href = url;
-      anchor.download = `adventure-${Date.now()}.txt`;
-      anchor.click();
-      URL.revokeObjectURL(url);
-      setStatus("已导出对话记录");
+      const anchor = document.createElement("a"); anchor.href = url; anchor.download = `adventure-${Date.now()}.txt`; anchor.click();
+      URL.revokeObjectURL(url); setStatus("已导出对话记录");
     }
-
     function clearAll() {
       if (!confirm("确定清空当前记录和本地存档吗？")) return;
       localStorage.removeItem(STORAGE_KEY);
-      state.started = false;
-      state.sessionStage = "idle";
-      state.messages = [];
-      state.lastUserInput = "";
-      state.currentTurnTimestamp = null;
-      state.setupState = null;
-      state.worldbook = null;
-      state.validation = { ok: false, checkedAt: "", detail: "模型未校验" };
+      state.started = false; state.sessionStage = "idle"; state.messages = [];
+      state.lastUserInput = ""; state.currentTurnTimestamp = null;
+      state.setupState = null; state.worldbook = null;
+      state.validation = { ok:false, checkedAt:"", detail:"模型未校验" };
       state.optionPanelOpen = false;
+      state.contextSummary = "";
+      state.lastSummarizedIndex = 0;
       els.textSpeed.value = String(DEFAULT_TEXT_SPEED);
-      updateTextSpeedLabel();
-      updateModelStatus();
-      updateSummary();
-      updateGameStateChip(getSessionLabel());
-      renderEmptyState();
-      refreshOptionStrip();
-      setStatus("已清空");
+      updateTextSpeedLabel(); updateModelStatus(); updateSummary();
+      updateGameStateChip(getSessionLabel()); renderEmptyState();
+      refreshOptionStrip(); setStatus("已清空");
     }
-
     function bindAutoSave() {
-      [
-        els.apiKey,
-        els.apiBase,
-        els.modelName,
-        els.textSpeed
-      ].forEach(input => {
+      [els.apiKey, els.apiBase, els.modelName, els.textSpeed].forEach(input => {
         input.addEventListener("input", () => {
-          if (input === els.apiKey || input === els.apiBase || input === els.modelName) {
-            state.validation = { ok: false, checkedAt: "", detail: "模型未校验" };
-            updateModelStatus();
-          }
-          if (input === els.textSpeed) {
-            updateTextSpeedLabel();
-          }
-          updateSummary();
-          saveState(true);
+          if (input === els.apiKey || input === els.apiBase || input === els.modelName) { state.validation = { ok:false, checkedAt:"", detail:"模型未校验" }; updateModelStatus(); }
+          if (input === els.textSpeed) updateTextSpeedLabel();
+          updateSummary(); saveState(true);
         });
       });
     }
@@ -3030,31 +2572,13 @@
     els.clearBtn.addEventListener("click", clearAll);
     els.optionToggleBtn.addEventListener("click", () => setOptionPanelOpen(true));
     els.optionCollapseBtn.addEventListener("click", () => setOptionPanelOpen(false));
-
     els.themePaperSettingsBtn.addEventListener("click", () => applyTheme("paper"));
     els.themeCrtSettingsBtn.addEventListener("click", () => applyTheme("crt"));
-
-    els.playerInput.addEventListener("keydown", event => {
-      if (event.key === "Enter" && !event.shiftKey) {
-        event.preventDefault();
-        sendTurn(els.playerInput.value);
-      }
-    });
-
-    document.addEventListener("keydown", event => {
-      if (event.key === "Escape" && !els.settingsModal.classList.contains("hidden")) {
-        closeSettings();
-      }
-    });
-
-    bindAutoSave();
-    loadState();
-    updateTextSpeedLabel();
-    updateSummary();
-    updateModelStatus();
-    updateThemeButtons();
-    refreshOptionStrip();
+    els.playerInput.addEventListener("keydown", event => { if (event.key === "Enter" && !event.shiftKey) { event.preventDefault(); sendTurn(els.playerInput.value); } });
+    document.addEventListener("keydown", event => { if (event.key === "Escape" && !els.settingsModal.classList.contains("hidden")) closeSettings(); });
+    bindAutoSave(); loadState(); updateTextSpeedLabel(); updateSummary(); updateModelStatus(); updateThemeButtons(); refreshOptionStrip();
     if (!state.messages.length) renderEmptyState();
   </script>
+<script defer src="https://static.cloudflareinsights.com/beacon.min.js/v8c78df7c7c0f484497ecbca7046644da1771523124516" integrity="sha512-8DS7rgIrAmghBFwoOTujcf6D9rXvH8xm8JQ1Ja01h9QX8EzXldiszufYa4IFfKdLUKTTrnSFXLDkUEOTrZQ8Qg==" data-cf-beacon='{"version":"2024.11.0","token":"75124c326cb447fe934cde04713ae013","r":1,"server_timing":{"name":{"cfCacheStatus":true,"cfEdge":true,"cfExtPri":true,"cfL4":true,"cfOrigin":true,"cfSpeedBrain":true},"location_startswith":null}}' crossorigin="anonymous"></script>
 </body>
 </html>
