@@ -1972,14 +1972,14 @@
       return normalized === "你" || normalized === "玩家" || normalized === playerName;
     }
     function splitDialogueContentSegments(speaker, speech, role) {
-      const cleanSpeech = (speech || "").replace(/^[""]/,"").replace(/["""]$/,"").trim();
+      const cleanSpeech = (speech || "").replace(/^["“”'「」]+/,"").replace(/["“”'「」]+$/,"").trim();
       if (!cleanSpeech) return [];
       const actionHint = /(皱|抬|低|看|望|笑|沉默|点头|摇头|叹|停顿|顿了顿|恢复平静|迟疑|压低|提高|放轻|深吸|吸了口气|眯起|蹙|咬了咬|耸了耸|轻咳|清了清嗓|转身|站起|坐下|后退|上前|扫了|打量|瞥了)/;
       const speechHint = /(我|我们|你|你们|请|必须|可以|会|不会|不能|知道|明白|听着|马上|立刻|现在|已经|需要|应该|汇报|调查|走吧|好的|是的)/;
       const sentences = cleanSpeech.match(/[^。！？!?]+[。！？!?]?/g)?.map(i=>i.trim()).filter(Boolean) || [cleanSpeech];
       function isLikelyActionSentence(sentence) {
         const text = sentence.trim().replace(new RegExp(`^${speaker}`),"").trim();
-        if (!text) return false; if (/["""'「」]/.test(text)) return false;
+        if (!text) return false; if (/["“”'「」]/.test(text)) return false;
         if (speechHint.test(text) && !actionHint.test(text)) return false;
         return actionHint.test(text);
       }
@@ -2076,9 +2076,9 @@
       if (lineBased) return lineBased.map(s => s.type === "narration" ? { ...s, content: stripTrailingSignature(s.content) } : s).filter(s => s.content);
       const segments = [];
       const patterns = [
-        { type:"player_embedded", regex:/["""]([^""]+)["""][，,]?\s*你(?:向[^，。！？\n]+)?(?:说明来意|解释道|说道|说|问|回答|补充说|开口说)[，,、\s]*["""]([^""]+)["""]/g },
-        { type:"strict", regex:/([\u4e00-\u9fa5A-Za-z0-9·]{1,16})说[：:\s]*["""]([^""]+)["""]/g },
-        { type:"narrated", regex:/([\u4e00-\u9fa5A-Za-z0-9·]{1,16}[^。！？\n""]{0,48}?)说[：:\s]*["""]([^""]+)["""]/g }
+        { type:"player_embedded", regex:/["“”「」"]([^"“”「」"]+)["“”「」"][，,]?\s*你(?:向[^，。！？\n]+)?(?:说明来意|解释道|说道|说|问|回答|补充说|开口说)[，,、\s]*["“”「」"]([^"“”「」"]+)["“”「」"]/g },
+        { type:"strict", regex:/([\u4e00-\u9fa5A-Za-z0-9·]{1,16})说[：:\s]*["“”「」"]([^"“”「」"]+)["“”「」"]/g },
+        { type:"narrated", regex:/([\u4e00-\u9fa5A-Za-z0-9·]{1,16}[^。！？\n"“”「」]{0,48}?)说[：:\s]*["“”「」"]([^"“”「」"]+)["“”「」"]/g }
       ];
       function normalizeSpeech(a,b="") { const left = a.trim().replace(/[，,]\s*$/,"，"); const right = b.trim().replace(/^[，,\s]+/,""); return right ? `\u201c${left}${right}\u201d` : `\u201c${left}\u201d`; }
       function extractSpeakerFromNarratedPrefix(prefix) { const match = prefix.match(/^([\u4e00-\u9fa5A-Za-z0-9·]{1,8}?)(?=(?:抬|低|看|皱|笑|沉|点|站|坐|转|望|听|开|走|拿|挥|叹|清|向|没|若|略|缓|顿|想|神|眼|，|,|。|！|？|；|$))/); return match ? match[1].trim() : "人物"; }
