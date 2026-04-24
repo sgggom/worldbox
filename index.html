@@ -2,7 +2,7 @@
 <html lang="zh-CN">
 <head>
   <meta charset="UTF-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover" />
   <title>纸页与荧屏</title>
   <link rel="preconnect" href="https://fonts.googleapis.com" />
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
@@ -70,9 +70,20 @@
     }
 
     *, *::before, *::after { box-sizing: border-box; }
-    html, body { margin: 0; min-height: 100%; }
+    html, body {
+      margin: 0;
+      width: 100%;
+      min-height: 100%;
+      background: var(--bg);
+    }
+
+    html {
+      height: 100%;
+    }
 
     body {
+      min-height: 100vh;
+      min-height: 100dvh;
       font-family: var(--body-font);
       font-size: 15px;
       color: var(--text);
@@ -179,8 +190,16 @@
     .app-shell {
       position: fixed;
       inset: 0;
+      width: 100%;
+      min-height: 100vh;
+      min-height: 100dvh;
       display: flex;
       flex-direction: column;
+      background:
+        radial-gradient(ellipse 120% 80% at 15% 8%, rgba(255, 240, 210, 0.5), transparent 50%),
+        radial-gradient(ellipse 80% 60% at 88% 16%, rgba(211, 180, 127, 0.25), transparent 40%),
+        radial-gradient(ellipse 60% 100% at 50% 100%, rgba(180, 155, 110, 0.15), transparent 60%),
+        linear-gradient(178deg, var(--bg) 0%, var(--bg-accent) 100%);
     }
 
     .app {
@@ -842,7 +861,7 @@
       min-width: 0;
     }
 
-    textarea, input[type="text"], input[type="password"] {
+    textarea, input[type="text"], input[type="password"], select {
       width: 100%;
       border: 1px solid var(--line);
       background: var(--input-bg);
@@ -854,7 +873,21 @@
       transition: border-color 200ms ease, box-shadow 200ms ease, background 200ms ease;
     }
 
-    textarea:focus, input[type="text"]:focus, input[type="password"]:focus {
+    select {
+      min-height: 44px;
+      appearance: none;
+      background-image:
+        linear-gradient(45deg, transparent 50%, var(--muted) 50%),
+        linear-gradient(135deg, var(--muted) 50%, transparent 50%);
+      background-position:
+        calc(100% - 18px) 50%,
+        calc(100% - 13px) 50%;
+      background-size: 5px 5px, 5px 5px;
+      background-repeat: no-repeat;
+      padding-right: 36px;
+    }
+
+    textarea:focus, input[type="text"]:focus, input[type="password"]:focus, select:focus {
       border-color: color-mix(in srgb, var(--accent) 48%, var(--line));
       box-shadow: 0 0 0 3px color-mix(in srgb, var(--accent) 12%, transparent);
     }
@@ -1236,10 +1269,18 @@
 
           <section class="section-card">
             <h4>模型接入</h4>
-            <p>配置硅基流动接口，并在开始前做一次快速校验。</p>
+            <p>选择模型供应商，填入对应 API Key，并在开始前做一次快速校验。</p>
             <div class="form-grid">
               <label>
-                <span>硅基流动 API Key</span>
+                <span>模型供应商</span>
+                <select id="modelProvider">
+                  <option value="siliconflow">硅基流动</option>
+                  <option value="deepseek">DeepSeek</option>
+                  <option value="custom">自定义 OpenAI 兼容接口</option>
+                </select>
+              </label>
+              <label>
+                <span id="apiKeyLabel">硅基流动 API Key</span>
                 <input id="apiKey" type="password" placeholder="sk-..." />
               </label>
               <div class="two-col">
@@ -1251,6 +1292,10 @@
                   <span>模型名</span>
                   <input id="modelName" type="text" list="modelOptions" value="Qwen/Qwen2.5-7B-Instruct" />
                   <datalist id="modelOptions">
+                    <option value="deepseek-v4-flash"></option>
+                    <option value="deepseek-v4-pro"></option>
+                    <option value="deepseek-chat"></option>
+                    <option value="deepseek-reasoner"></option>
                     <option value="deepseek-ai/DeepSeek-V3.2"></option>
                     <option value="deepseek-ai/DeepSeek-R1"></option>
                     <option value="Qwen/Qwen3.5-122B-A10B"></option>
@@ -1302,8 +1347,29 @@
   </div>
   <script>
     const STORAGE_KEY = "siliconflow_text_adventure_v2";
-    const DEFAULT_API_BASE = "https://api.siliconflow.cn/v1/chat/completions";
-    const DEFAULT_MODEL = "Qwen/Qwen2.5-7B-Instruct";
+    const MODEL_PROVIDERS = {
+      siliconflow: {
+        label: "硅基流动",
+        apiKeyLabel: "硅基流动 API Key",
+        apiBase: "https://api.siliconflow.cn/v1/chat/completions",
+        modelName: "Qwen/Qwen2.5-7B-Instruct"
+      },
+      deepseek: {
+        label: "DeepSeek",
+        apiKeyLabel: "DeepSeek API Key",
+        apiBase: "https://api.deepseek.com/chat/completions",
+        modelName: "deepseek-v4-flash"
+      },
+      custom: {
+        label: "自定义",
+        apiKeyLabel: "API Key",
+        apiBase: "",
+        modelName: ""
+      }
+    };
+    const DEFAULT_PROVIDER = "siliconflow";
+    const DEFAULT_API_BASE = MODEL_PROVIDERS[DEFAULT_PROVIDER].apiBase;
+    const DEFAULT_MODEL = MODEL_PROVIDERS[DEFAULT_PROVIDER].modelName;
     const DEFAULT_TEXT_SPEED = 28;
     const MAX_WORLDBUILD_ROUNDS = 10;
     const CONTEXT_WINDOW_SIZE = 10;
@@ -1339,6 +1405,8 @@
       modalBackdrop: document.getElementById("modalBackdrop"),
       closeSettingsBtn: document.getElementById("closeSettingsBtn"),
       closeSettingsFootBtn: document.getElementById("closeSettingsFootBtn"),
+      modelProvider: document.getElementById("modelProvider"),
+      apiKeyLabel: document.getElementById("apiKeyLabel"),
       apiKey: document.getElementById("apiKey"),
       apiBase: document.getElementById("apiBase"),
       modelName: document.getElementById("modelName"),
@@ -1442,6 +1510,28 @@
       const value = Number.parseInt(els.textSpeed.value, 10) || DEFAULT_TEXT_SPEED;
       els.textSpeedValue.textContent = `${value} 字/秒`;
     }
+    function getProviderPreset(provider = els.modelProvider.value) {
+      return MODEL_PROVIDERS[provider] || MODEL_PROVIDERS[DEFAULT_PROVIDER];
+    }
+    function inferProviderFromConfig(apiBase = "", modelName = "") {
+      const normalizedBase = apiBase.trim();
+      if (normalizedBase.includes("api.deepseek.com") || modelName.trim().startsWith("deepseek-")) return "deepseek";
+      if (normalizedBase.includes("api.siliconflow.cn")) return "siliconflow";
+      return "custom";
+    }
+    function applyProviderPreset(provider, options = {}) {
+      const preset = getProviderPreset(provider);
+      const previousPreset = getProviderPreset(els.modelProvider.value);
+      const shouldFill = options.force || !els.apiBase.value.trim() || els.apiBase.value.trim() === previousPreset.apiBase;
+      els.modelProvider.value = MODEL_PROVIDERS[provider] ? provider : DEFAULT_PROVIDER;
+      els.apiKeyLabel.textContent = preset.apiKeyLabel;
+      if (shouldFill && preset.apiBase) els.apiBase.value = preset.apiBase;
+      if ((options.force || !els.modelName.value.trim() || els.modelName.value.trim() === previousPreset.modelName) && preset.modelName) {
+        els.modelName.value = preset.modelName;
+      }
+      if (provider !== "custom") state.validation = { ok:false, checkedAt:"", detail:"模型未校验" };
+      updateModelStatus();
+    }
     function setBusy(flag, phase = "idle") {
       state.busy = flag;
       state.phase = phase;
@@ -1459,10 +1549,12 @@
       }
     }
     function getConfig() {
+      const provider = MODEL_PROVIDERS[els.modelProvider.value] ? els.modelProvider.value : inferProviderFromConfig(els.apiBase.value, els.modelName.value);
       return {
+        provider,
         apiKey: els.apiKey.value.trim(),
-        apiBase: els.apiBase.value.trim() || DEFAULT_API_BASE,
-        modelName: els.modelName.value.trim() || DEFAULT_MODEL,
+        apiBase: els.apiBase.value.trim() || getProviderPreset(provider).apiBase || DEFAULT_API_BASE,
+        modelName: els.modelName.value.trim() || getProviderPreset(provider).modelName || DEFAULT_MODEL,
         textSpeed: Number.parseInt(els.textSpeed.value, 10) || DEFAULT_TEXT_SPEED
       };
     }
@@ -1659,10 +1751,13 @@
       try {
         const parsed = JSON.parse(raw);
         if (parsed.config) {
+          const provider = parsed.config.provider || inferProviderFromConfig(parsed.config.apiBase || "", parsed.config.modelName || "");
+          els.modelProvider.value = MODEL_PROVIDERS[provider] ? provider : "custom";
           els.apiKey.value = parsed.config.apiKey || "";
           els.apiBase.value = parsed.config.apiBase || DEFAULT_API_BASE;
           els.modelName.value = parsed.config.modelName || DEFAULT_MODEL;
           els.textSpeed.value = String(parsed.config.textSpeed || DEFAULT_TEXT_SPEED);
+          applyProviderPreset(els.modelProvider.value, { force:false });
         }
         state.started = Boolean(parsed.started);
         state.sessionStage = parsed.sessionStage === "worldbuild" ? "setup"
@@ -2555,15 +2650,25 @@
       state.optionPanelOpen = false;
       state.contextSummary = "";
       state.lastSummarizedIndex = 0;
+      applyProviderPreset(DEFAULT_PROVIDER, { force:true });
       els.textSpeed.value = String(DEFAULT_TEXT_SPEED);
       updateTextSpeedLabel(); updateModelStatus(); updateSummary();
       updateGameStateChip(getSessionLabel()); renderEmptyState();
       refreshOptionStrip(); setStatus("已清空");
     }
     function bindAutoSave() {
+      els.modelProvider.addEventListener("change", () => {
+        applyProviderPreset(els.modelProvider.value, { force: els.modelProvider.value !== "custom" });
+        updateSummary();
+        saveState(true);
+      });
       [els.apiKey, els.apiBase, els.modelName, els.textSpeed].forEach(input => {
         input.addEventListener("input", () => {
           if (input === els.apiKey || input === els.apiBase || input === els.modelName) { state.validation = { ok:false, checkedAt:"", detail:"模型未校验" }; updateModelStatus(); }
+          if (input === els.apiBase || input === els.modelName) {
+            els.modelProvider.value = inferProviderFromConfig(els.apiBase.value, els.modelName.value);
+            applyProviderPreset(els.modelProvider.value, { force:false });
+          }
           if (input === els.textSpeed) updateTextSpeedLabel();
           updateSummary(); saveState(true);
         });
