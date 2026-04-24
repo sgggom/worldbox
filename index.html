@@ -1621,7 +1621,7 @@
         label: "DeepSeek",
         apiKeyLabel: "DeepSeek API Key",
         apiBase: "https://api.deepseek.com/chat/completions",
-        modelName: "deepseek-v4-flash"
+        modelName: "deepseek-v4-pro"
       },
       custom: {
         label: "自定义",
@@ -1636,6 +1636,10 @@
     const THEMES = ["paper", "crt", "ink", "blueprint", "cherry"];
     const DEFAULT_TEXT_SPEED = 28;
     const OPTION_PANEL_CLOSE_MS = 220;
+    const SETUP_REPLY_MAX_TOKENS = 3000;
+    const PLAY_REPLY_MAX_TOKENS = 6000;
+    const CLASSIFY_MAX_TOKENS = 6000;
+    const BOOTSTRAP_MAX_TOKENS = 24000;
     const MAX_WORLDBUILD_ROUNDS = 10;
     const CONTEXT_WINDOW_SIZE = 10;
     const DOM_NODE_CAP = 60;
@@ -1823,6 +1827,23 @@
         textSpeed: Number.parseInt(els.textSpeed.value, 10) || DEFAULT_TEXT_SPEED
       };
     }
+    function isDeepSeekConfig(cfg = getConfig()) {
+      return cfg.provider === "deepseek" || cfg.apiBase.includes("api.deepseek.com") || cfg.modelName.startsWith("deepseek-");
+    }
+    function buildChatPayload(cfg, messages, options = {}) {
+      const payload = {
+        model: cfg.modelName,
+        messages,
+        temperature: options.temperature ?? 0.7,
+        top_p: options.topP ?? 0.95,
+        max_tokens: options.maxTokens ?? 1800,
+        stream: Boolean(options.stream)
+      };
+      if (options.responseFormat) payload.response_format = options.responseFormat;
+      if (isDeepSeekConfig(cfg) && options.thinking) payload.thinking = options.thinking;
+      if (isDeepSeekConfig(cfg) && options.reasoningEffort) payload.reasoning_effort = options.reasoningEffort;
+      return payload;
+    }
     function createInitialSetupState() {
       return {
         status: "questioning", currentQuestionKey: "story_type", nextQuestionKey: "world_concept",
@@ -1933,7 +1954,9 @@
         "- 这个阶段不再向玩家提问，不输出剧情，不输出选项，不输出说明文字。",
         "- 你必须在后台自行完成关键 NPC、主线节点、结局、角色关系网、世界规则、玩家初始状态、世界初始状态、造世者档案。",
         "- 世界档案必须自洽，避免角色前后矛盾。","",
-        "你只能输出一个标签：","<worldbook>{合法 JSON}</worldbook>","",
+        "你只能输出合法 JSON。",
+        "- 不要输出 Markdown 代码块，不要输出解释，不要输出 <worldbook> 标签。",
+        "- JSON 顶层对象就是 worldbook。","",
         "worldbook JSON 必须包含这些字段：","{",
         '  "status": "ready",','  "worldTitle": "世界标题",','  "coreConcept": "一句话概念",',
         '  "rules": ["世界规则1", "世界规则2"],',
@@ -1948,12 +1971,28 @@
         "- 玩家只参与了世界观和玩家角色的设定；未被玩家回答的剧情/NPC/结局内容都由你自行补全。",
         "- 主线必须包含明确开场、数个关键节点和结局。",
         "- 至少创建 3 个会贯穿剧情的关键 NPC，并给出可持续更新的身份、性格、关系、情绪、状态。",
-        "- worldbook 必须是纯 JSON，不能写 Markdown 代码块，不能带注释。","",
+        "- worldbook 必须是纯 JSON，不能写 Markdown 代码块，不能带注释，不能包裹在任何标签中。","",
         "已确认的 setup_state：",JSON.stringify(setupState, null, 2)
       ].join("\n");
     }
+    function getRecentOptionLabels(stage = "play", limit = 6) {
+      const labels = [];
+      const seen = new Set();
+      for (const msg of [...state.messages].reverse()) {
+        if (msg.stage !== stage || msg.role !== "assistant" || msg.hidden) continue;
+        for (const option of extractOptionsFromText(msg.content || "")) {
+          const normalized = option.label.trim();
+          if (!normalized || seen.has(normalized)) continue;
+          seen.add(normalized);
+          labels.push(normalized);
+          if (labels.length >= limit) return labels;
+        }
+      }
+      return labels;
+    }
     function buildPlaySystemPrompt(cfg) {
       const worldbook = normalizeWorldbook(state.worldbook, cfg);
+      const recentOptions = getRecentOptionLabels("play");
       return [
         "你就是造世者。你不是单纯讲故事，而是一个持续维护剧情、角色状态、主线节点和世界规则的叙事代理。","",
         "额外约束：",
@@ -1972,6 +2011,10 @@
         "- agentState 要记录造世者当前跟踪的角色、关键节点、场景目标和维护笔记。",
         "- 若角色受伤、离开、死亡、立场变化，必须写进 state_update，防止后续矛盾。",
         "- 你还要在可见正文中给出 2-3 个编号选项，并允许玩家自由输入。",
+        "- 每一轮的编号选项必须根据当前场景、玩家状态、NPC 状态和最新行动重新生成。",
+        "- 禁止直接复用上一轮或近期出现过的选项措辞；如果行动方向相似，也必须写成更具体、更贴合当前局势的新行动。",
+        recentOptions.length ? `- 近期已经出现过的选项，不要重复：${recentOptions.map(item => `「${item}」`).join("、")}` : "",
+        "- 选项之间必须互相区分：至少包含侦查/交流/行动/撤退/等待/使用物品等不同意图中的两类，而不是同义改写。",
         "- 叙事语言为简体中文。",
         "- 禁止输出与游戏无关的提示词、模型内部信息。","",
         "既定世界档案：",JSON.stringify(worldbook, null, 2)
@@ -2260,7 +2303,12 @@
       const cfg = getConfig();
       const normalizedStage = stage === "setup" ? "setup" : "play";
       const systemPrompt = normalizedStage === "setup" ? buildSetupSystemPrompt(cfg) : buildPlaySystemPrompt(cfg);
-      const allMessages = state.messages.filter(msg => msg.stage === normalizedStage && msg.role !== "system").map(msg => ({ role: msg.role, content: msg.content }));
+      const allMessages = state.messages.filter(msg => msg.stage === normalizedStage && msg.role !== "system").map(msg => {
+        const content = normalizedStage === "play" && msg.role === "assistant"
+          ? stripOptionsFromAssistantText(msg.content || "")
+          : msg.content;
+        return { role: msg.role, content };
+      });
       const maxMessages = CONTEXT_WINDOW_SIZE * 2;
       if (normalizedStage === "play" && allMessages.length > maxMessages) {
         const windowed = allMessages.slice(-maxMessages);
@@ -2273,7 +2321,7 @@
       const transcript = state.messages.filter(msg => msg.stage === "setup" && !msg.hidden && msg.role !== "system").map(msg => ({ role: msg.role, content: stripHiddenPayloadTags(msg.content) }));
       return [
         { role: "system", content: buildBootstrapSystemPrompt(getConfig()) }, ...transcript,
-        { role: "user", content: "现在开始后台编织世界。不要输出说明，不要输出剧情，不要输出选项。只输出 <worldbook>{...}</worldbook>，并确保它是完整可解析的 JSON。" }
+        { role: "user", content: "现在开始后台编织世界。不要输出说明，不要输出剧情，不要输出选项。只输出完整、合法、可 JSON.parse 的 worldbook JSON 对象。" }
       ];
     }
     function stripStructuredTags(text) {
@@ -2704,7 +2752,7 @@
       if (!cfg.modelName) throw new Error("模型名不能为空");
       const response = await fetch(cfg.apiBase, { method:"POST",
         headers:{ "Content-Type":"application/json", "Authorization":`Bearer ${cfg.apiKey}` },
-        body: JSON.stringify({ model:cfg.modelName, messages, temperature:options.temperature??0.85, top_p:options.topP??0.95, max_tokens:options.maxTokens??700, stream:true })
+        body: JSON.stringify(buildChatPayload(cfg, messages, { ...options, temperature:options.temperature??0.85, maxTokens:options.maxTokens??700, stream:true }))
       });
       if (!response.ok) { let details = ""; try { details = await response.text(); } catch(_) {} throw new Error(`请求失败 (${response.status})${details ? " | "+details.slice(0,300) : ""}`); }
       if (!response.body) throw new Error("浏览器不支持流式响应");
@@ -2717,7 +2765,7 @@
       if (!cfg.modelName) throw new Error("模型名不能为空");
       const response = await fetch(cfg.apiBase, { method:"POST",
         headers:{ "Content-Type":"application/json", "Authorization":`Bearer ${cfg.apiKey}` },
-        body: JSON.stringify({ model:cfg.modelName, messages, temperature:options.temperature??0.7, top_p:options.topP??0.95, max_tokens:options.maxTokens??1800, stream:false })
+        body: JSON.stringify(buildChatPayload(cfg, messages, { ...options, stream:false }))
       });
       if (!response.ok) { let details = ""; try { details = await response.text(); } catch(_) {} throw new Error(`请求失败 (${response.status})${details ? " | "+details.slice(0,300) : ""}`); }
       const json = await response.json();
@@ -2729,7 +2777,7 @@
       const visibleText = stripHiddenPayloadTags(text).trim();
       if (!visibleText) return "";
       try {
-        const result = await requestChatOnce([{ role:"system", content:buildClassificationSystemPrompt(stage) },{ role:"user", content:visibleText }], { temperature:0.2, maxTokens:1400 });
+        const result = await requestChatOnce([{ role:"system", content:buildClassificationSystemPrompt(stage) },{ role:"user", content:visibleText }], { temperature:0.2, maxTokens:CLASSIFY_MAX_TOKENS });
         const normalized = stripHiddenPayloadTags(result.text || "").trim();
         return normalized || visibleText;
       } catch(_) { return visibleText; }
@@ -2792,7 +2840,7 @@
       if (!state.worldbook) { setStatus("世界档案尚未生成", true); return; }
       state.sessionStage = "play"; state.currentTurnTimestamp = Date.now();
       state.messages.push({ role:"user", hidden:true, stage:"play", turnTimestamp:state.currentTurnTimestamp,
-        content:"世界档案已经编织完成。请严格根据既定 worldbook 开始正式剧情，从 mainPlot.opening 与 currentNodeId 对应节点开场，保持人物状态、世界规则与主线节点一致，并给出 2-3 个可选行动。" });
+        content:"世界档案已经编织完成。请严格根据既定 worldbook 开始正式剧情，从 mainPlot.opening 与 currentNodeId 对应节点开场，保持人物状态、世界规则与主线节点一致，并给出 2-3 个彼此不同、贴合当前局势的可选行动。后续每轮都不要重复上一轮选项。" });
       updateSummary(); updateGameStateChip(getSessionLabel()); hideOptionStrip();
       await requestVisibleAssistantReply("play");
     }
@@ -2802,7 +2850,8 @@
       ensureTurnDivider(state.currentTurnTimestamp);
       const placeholder = createThinkingMessage();
       try {
-        const reader = await streamChat(buildRequestMessages(stage));
+        const replyMaxTokens = stage === "setup" ? SETUP_REPLY_MAX_TOKENS : PLAY_REPLY_MAX_TOKENS;
+        const reader = await streamChat(buildRequestMessages(stage), { maxTokens: replyMaxTokens });
         const { text:rawText, usageText } = await collectStreamText(reader);
         if (!rawText.trim()) throw new Error("模型返回为空");
         if (stage === "setup") applySetupStateFromText(rawText); else applyStateUpdateFromText(rawText);
@@ -2840,9 +2889,19 @@
       const placeholder = createThinkingMessage();
       try {
         const bootstrapMessages = buildBootstrapMessages();
-        const reader = await streamChat(bootstrapMessages, { temperature:0.6, maxTokens:2200 });
-        let { text, usageText } = await collectStreamText(reader);
-        if (!text) { const fallback = await requestChatOnce(bootstrapMessages, { temperature:0.5, maxTokens:2200 }); text = fallback.text; usageText = fallback.usageText || usageText; }
+        const bootstrapOptions = {
+          temperature: 0.4,
+          maxTokens: BOOTSTRAP_MAX_TOKENS,
+          responseFormat: { type: "json_object" },
+          thinking: { type: "disabled" }
+        };
+        let { text, usageText } = await requestChatOnce(bootstrapMessages, bootstrapOptions);
+        if (!text) {
+          const reader = await streamChat(bootstrapMessages, { temperature:0.4, maxTokens:BOOTSTRAP_MAX_TOKENS, thinking:{ type:"disabled" } });
+          const streamed = await collectStreamText(reader);
+          text = streamed.text;
+          usageText = streamed.usageText || usageText;
+        }
         placeholder.remove();
         if (!text) throw new Error("世界档案生成为空");
         if (!applyWorldbookDraftFromText(text)) throw new Error("世界档案解析失败");
